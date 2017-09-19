@@ -1,0 +1,58 @@
+\subsection{Divide/conquer pattern}
+
+\begin{frame}[t]{Divide/conquer pattern}
+\begin{itemize}
+  \item A \textgood{divide/conquer} pattern splits a problem into two or more independent subproblems until a base case is reached.
+    \begin{itemize}
+      \item The base case is solved directly.
+      \item The results of the subproblems are combined until the final solution of the original problem is obtained.
+    \end{itemize}
+
+  \vfill\pause
+  \item \textenum{Key elements}:
+    \begin{itemize}
+      \item \textmark{Divider}: Divides a problem in a set of subproblems.
+      \item \textmark{Solver}: Solves and individual subproblem.
+      \item \textmark{Combiner}: Combines two solutions.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{A patterned merge/sort}
+\begin{block}{Ranges on vectors}
+\begin{lstlisting}
+struct range {
+  range(std::vector<double> & v) : first{v.begin()}, last{v.end()} {}
+  auto size() const { return std::distance(first,last); }
+  std::vector<double> first, last;
+};
+
+std::vector<range> divide(range r) {
+  auto mid = r.first + r.size() / 2;
+  return { {r.first, mid}, {mid, r.last} };
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{A patterned merge/sort}
+\begin{block}{Ranges on vectors}
+\begin{lstlisting}
+template <typename Execution>
+void merge_sort(const Execution & ex, std::vector<double> & v)
+{
+  grppi::divide_conquer(exec,
+    range(v),
+    [](auto r) -> vector<range> {
+      if (1>=r.size()) return {r};
+      else return divide(r);
+    },
+    [](auto x) { return x; },
+    [](auto r1, auto r2) {
+      std::inplace_merge(r1.first, r1.last, r2.last);
+      return range{r1.first, r2.last};
+    });
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

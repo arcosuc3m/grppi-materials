@@ -1,0 +1,41 @@
+\subsection{Iterations in pipelines}
+
+\begin{frame}[t]{Stream iteration pattern}
+\begin{itemize}
+  \item A \textgood{stream iteration} pattern allows loops in data stream processing.
+    \begin{itemize}
+      \item An operation is applied to a data item until a predicate is satisfied.
+      \item When the predicate is met, the result is sent to the output stream.
+    \end{itemize}
+  \vfill\pause
+  \item \textenum{Key elements}:
+    \begin{itemize}
+      \item A \textmark{transformer} that is applied to a data item on each iteration.
+      \item A \textmark{predicate} to determine when the iteration has finished.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Iterating}
+\begin{block}{Print values $2^n*x$}
+\begin{lstlisting}
+template <typename Execution>
+void print_values(const Execution & ex, int n)
+{
+  auto generator = [i=1,max=n+1]() mutable -> optional<int> {
+    if (i<max) return i++;
+    else return {};
+  };
+
+  grppi::pipeline(ex,
+    generator,
+    grppi::repeat_until(
+      [](int x) { return 2*x; },
+      [](int x) { return x>1024; }
+    ),
+    [](int x) { cout << x << endl; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

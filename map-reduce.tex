@@ -1,0 +1,121 @@
+\subsection{Map/reduce pattern}
+
+\begin{frame}[t]{Map/reduce pattern}
+\begin{itemize}
+  \item A \textgood{map/reduce} pattern combines a \textmark{map} pattern and
+        a \textmark{reduce} pattern into a single pattern.
+    \begin{enumerate}
+      \item One or more data sets are \textmark{mapped} applying a transformation operation.
+      \item The results are combined by a \textmark{reduction} operation.
+    \end{enumerate}
+  \vfill
+  \item A \textmark{map/reduce} could be also expressed by the composition of a
+        \textmark{map} and a \textmark{reduce}. 
+    \begin{itemize}
+      \item However, \textmark{map/reduce} may potentially fuse both stages, 
+            allowing for extra optimizations.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Map/reduce with single data set}
+\begin{itemize}
+  \item A \textgood{map/reduce} on a single input sequence producing a value.
+  \vfill\pause
+  \item Given:
+    \begin{itemize}
+      \item A sequence $x_1, x_2, \ldots x_N \in T$
+      \item A mapping function $m : T \mapsto R$
+      \item A reduction identity value $id \in I$.
+      \item A combine operation $c : I \times R \mapsto I$
+    \end{itemize}
+  \vfill\pause
+  \item It generates a value reducing the mapping:
+    \begin{itemize}
+      \item $c(c(c(id,m_1),m_2), \ldots, m_M)$
+      \item Where $m_k = m(x_k)$
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Single sequence map/reduce}
+\begin{block}{Sum of squares}
+\begin{lstlisting}
+template <typename Execution>
+double sum_squares(const Execution & ex, const std::vector<double> & v)
+{
+  return grppi::map_reduce(ex, v.begin(), v.end(), 0.0,
+    [](double x) { return x*x; }
+    [](double x, double y) { return x+y; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Map/reduce in multiple data sets}
+\begin{itemize}
+  \item A \textgood{map/reduce} on multiple input sequences producing a single value.
+  \vfill\pause
+  \item Given:
+    \begin{itemize}
+      \item A sequence $x^1_1, x^1_2, \ldots x^1_N \in T_1$
+      \item A sequence $x^2_1, x^2_2, \ldots x^2_N \in T_2$
+      \item \ldots
+      \item A sequence $x^M_1, x^M_2, \ldots x^M_N \in T_M$
+      \item A mapping function $m : T_1 \times T_2 \times \ldots \times T_M \mapsto R$
+      \item A reduction identity value $id \in I$.
+      \item A combine operation $c : I \times R \mapsto I$
+    \end{itemize}
+  \vfill\pause
+  \item It generates a value reducing the mapping:
+    \begin{itemize}
+      \item $c(c(c(id,m_1),m_2), \ldots, m_M)$
+      \item Where $m_k = m(x^k_1, x^k_2, \ldots, x^k_N)$
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Map/reduce on two data sets}
+\begin{block}{Scalar product}
+\begin{lstlisting}
+template <typename Execution>
+double scalar_product(const Execution & ex,
+                      const std::vector<double> & v1,
+                      const std::vector<double> & v2)
+{
+  return grppi::map_reduce(ex, begin(v1), end(v1), 0.0,
+    [](double x, double y) { return x*y; },
+    [](double x, double y) { return x+y; },
+    v2.begin());
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Cannonical map/reduce}
+\begin{itemize}
+  \item Given a sequence of words, produce a \emph{<key,value>} container where:
+    \begin{itemize}
+      \item The key is the word.
+      \item The value is the number of occurrences of that word.
+    \end{itemize}
+\end{itemize}
+\vfill\pause
+\begin{block}{Word frequencies}
+\begin{lstlisting}
+template <typename Execution>
+auto word_freq(const Execution & ex, const std::vector<std::string> & words)
+{
+  using namespace std;
+  using dictionary = std::map<string,int>;
+  return grppi::map_reduce(ex, words.begin(), words.end(), dictionary{},
+    [](string w) -> dictionary { return {w,1}; }
+    [](dictionary & lhs, const dictionary & rhs) -> dictionary {
+      for (auto & entry : rhs) { lhs[entry.first] += entry.second; }
+      return lhs;
+    });
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

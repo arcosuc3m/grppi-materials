@@ -1,0 +1,59 @@
+\subsection{Filtering stages}
+
+\begin{frame}[t]{Filter pattern}
+\begin{itemize}
+  \item A \textgood{filter} pattern discards (or keeps) the data items from a 
+        data stream based on the outcome of a predicate.
+  \item This pattern can be used only as a stage of a \textmark{pipeline}.
+  \vfill\pause
+  \item \textenum{Alternatives}:
+    \begin{itemize}
+      \item \textmark{Keep}: Only data items satisfying the predicate are sent 
+            to the next stage.
+      \item \textmark{Discard}: Only data items \textbf{\alert{not satisfying}} 
+            the predicate are sent to the next stage.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Filtering in}
+\begin{block}{Print primes}
+\begin{lstlisting}
+bool is_prime(int n);
+
+template <typename Execution>
+void print_primes(const Execution & ex, int n)
+{
+  grppi::pipeline(exec,
+    [i=0,max=n]() mutable -> optional<int> {
+      if (i<=n) return i++;
+      else return {};
+    },
+    grppi::keep(is_prime),
+    [](int x) { cout << x << "\n"; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Filtering out}
+\begin{block}{Discard words}
+\begin{lstlisting}
+template <typename Execution>
+void print_primes(const Execution & ex, std::istream & is)
+{
+  grppi::pipeline(exec,
+    [&file]() -> optional<string> {
+      string word;
+      file >> word;
+      if (!file) { return {}; }
+      else { return word; }
+    },
+    grppi::discard([](std::string w) { return w.length() < 4; },
+    [](std::string w) { cout << x << "\n"; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

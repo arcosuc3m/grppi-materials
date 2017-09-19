@@ -1,0 +1,52 @@
+\subsection{Reduce pattern}
+
+\begin{frame}[t]{Reductions on data sequences}
+\begin{itemize}
+  \item A \textgood{reduce} pattern combines all values in a data set
+        using a binary combination operation.
+  \vfill
+  \item Given:
+    \begin{itemize}
+      \item A sequence $x_1, x_2, \ldots, x_N \in T$.
+      \item An identity value $id \in I$.
+      \item A combine operation $c : I \times T \mapsto I$
+        \begin{itemize}
+          \item $c(c(x,y),z) \equiv c(x,c(y,z))$
+          \item $c(id,x) = \bar{x}$, where $\bar{x}$ is the value of $x$ in $I$.
+          \item $c(id,c(id,x)) = c(id,x)$
+          \item $c(c(c(id,x),y),c(c(id,z),t)) = c(c(c(c(id,x),y),z),t)$
+        \end{itemize}
+    \end{itemize}
+  \vfill
+  \item It generates the value:
+    \begin{itemize}
+      \item $c(\ldots c(c(id,x_1), x_2) \ldots, x_N)$
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Homogeneous reduction}
+\begin{block}{Add a sequence of values}
+\begin{lstlisting}
+template <typename Execution>
+double add_sequence(const Execution & ex, const vector<double> & v)
+{
+  return grppi::reduce(ex, v.begin(), v.end(), 0.0,
+    [](double x, double y) { return x+y; });
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Heterogeneous reduction}
+\begin{block}{Add lengths of sequence of strings}
+\begin{lstlisting}
+template <typename Execution>
+int add_lengths(const Execution & ex, const std::vector<std::string> & words)
+{
+  return grppi::reduce(words.begin(), words.end(), 0,
+    [](int n, std::string w) { return n + w.length(); });
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

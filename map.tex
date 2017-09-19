@@ -1,0 +1,138 @@
+\subsection{Map pattern}
+
+\begin{frame}[t]{Maps on data sequences}
+\begin{itemize}
+  \item A \textgood{map} pattern applies an operation to every element in a
+        tuple of data sets generating a new data set.
+  \vfill
+  \item Given:
+    \begin{itemize}
+      \item A sequence $x^1_1, x^1_2, \ldots, x^1_N \in T_1$,
+      \item A sequence $x^2_1, x^2_2, \ldots, x^2_N \in T_2$,
+      \item \ldots, and
+      \item A sequence $x^M_1,  x^M_2, \ldots, x^M_N \in T_M$,
+      \item A function $f : T_1 \times T_2 \times \ldots \times T_M \mapsto U$
+    \end{itemize}
+  \vfill
+  \item It generates the sequence
+    \begin{itemize}
+      \item $f(x^1_1, x^2_1, \ldots, x^M_1)$,
+      $f(x^1_2, x^2_2, \ldots, x^M_2)$,
+      \ldots,
+      $f(x^1_N, x^2_N, \ldots, x^M_N)$
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Unidimensional maps}
+\begin{itemize}
+  \item \textgood{map} pattern on a single input data set.
+  \vfill
+  \item Given:
+    \begin{itemize}
+      \item A sequence $x_1, x_2, \ldots, x_N \in T$
+      \item A function $f: T \mapsto U$
+    \end{itemize}
+  \vfill
+  \item It generates the sequence:
+    \begin{itemize}
+      \item $f(x_1), f(x_2), \ldots, f(x_N)$
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Key element}
+\begin{itemize}
+  \item \textgood{Transformer operation}: Any operation that can perform the
+        transformation for a data item.
+
+  \vfill\pause
+  \item \textmark{UnaryTransformer}: Any C++ callable entity that takes a data
+        item and returns the transformed value.
+\begin{lstlisting}
+auto square = [](auto x) { return x*x; };
+auto length = [](const std::string & s) { return s.lenght(); };
+\end{lstlisting}
+
+  \vfill\pause
+  \item \textmark{MultiTransformer}: Any C++ callable entity that takes multiple
+        data items and return the transformed vaue.
+\begin{lstlisting}
+auto normalize = [](double x, double y) { return sqrt(x*x+y*y); };
+auto min = [](int x, int y, int z) { return std::min(x,y,z); }
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Single sequences mapping}
+\begin{block}{Double all elements in sequence}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<double> double_elements(const Execution & ex, 
+                                    const std::vector<double> & v) 
+{
+  std::vector<double> res(v.size());
+  grppi::map(ex, v.begin(), v.end(), res.begin(), 
+    [](double x) { return 2*x; });
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Multiple sequences mapping}
+\begin{block}{Add two vectors}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<double> add_vectors(const Execution & ex, 
+                                const std::vector<double> & v1,
+                                const std::vector<double> & v2) 
+{
+  auto size = std::min(v1.size(), v2.size());
+  std::vector<double> res(size);
+  grppi::map(ex, v1.begin(), v1.end(), res.begin(),
+    [](double x, double y) { return x+y; },
+    v2.begin());
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Multiple sequences mapping}
+\begin{block}{Add three vectors}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<double> add_vectors(const Execution & ex, 
+                                const std::vector<double> & v1,
+                                const std::vector<double> & v2,
+                                const std::vector<double> & v3) 
+{
+  auto size = std::min(v1.size(), v2.size());
+  std::vector<double> res(size);
+  grppi::map(ex, v1.begin(), v1.end(), res.begin(),
+    [](double x, double y, double z) { return x+y+z; },
+    v2.begin(), v3.begin());
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Heterogeneous mapping}
+\begin{itemize}
+  \item The result can be from a different type.
+\end{itemize}
+\begin{block}{Complex vector from real and imaginary vectors}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<complex<double>> create_cplx(const Execution & ex,
+                                         const std::vector<double> & re,
+                                         const std::vector<double> & im)
+{
+  auto size = std::min(re.size(), im.size());
+  std::vector<complex<double>> res(size);
+  grppi::map(ex, re.begin(), re.end(), res.begin(),
+    [](double r, double i) -> complex<double> { return {r,i}; }
+    im.begin());
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

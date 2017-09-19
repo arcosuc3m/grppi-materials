@@ -1,0 +1,46 @@
+\usepackage{listings}
+
+\lstdefinestyle{terminal}{
+  language=bash,
+  basicstyle=\scriptsize\ttfamily,
+  numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{yellow!20},
+  literate=%
+    {¿}{{?`}}1
+    {¡}{{!`}}1
+    {á}{{\'a}}1
+    {é}{{\'e}}1
+    {í}{{\'i}}1
+    {ó}{{\'o}}1
+    {ú}{{\'u}}1
+    {ñ}{{\~n}}1
+}
+
+\lstdefinestyle{termoutput}{
+  basicstyle=\scriptsize\ttfamily,
+  frame=tb,
+  backgroundcolor=\color{blue!20},
+  keywordstyle=\color{black},
+  commentstyle=\color{black},
+  identifierstyle=\color{black},
+  stringstyle=\color{black},
+}
+
+
+\lstset{
+  language=[ISO]C++,
+  basicstyle=\scriptsize,
+  morekeywords=[1]{constexpr,nullptr,alignof,alignas,decltype,noexcept,override,final},
+}
+
+
+\renewcommand{\cppkey}[1]{%
+{\color{green!40!black}\textbf{#1}}%
+}
+
+\renewcommand{\cppid}[1]{%
+{\color{blue}\textbf{#1}}%
+}
+

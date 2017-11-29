@@ -1,0 +1,108 @@
+\begin{frame}[t]{GrPPI ideals}
+\begin{itemize}[<+->]
+  \item Applications should be expressed \textmark{independently} of the
+        \textgood{execution model}.
+  \vfill
+  \item \textgood{Multiple back-ends} should be offered with \textmark{simple switching}
+        mechanisms.
+  \vfill
+  \item Interface should \textmark{integrate} seamlessly with \textgood{modern C++} and
+        its standard library.
+  \vfill
+  \item Applications should be able to \textmark{take advantage} of \textgood{modern C++} language features.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{GrPPI}
+\begin{Large}
+\textgood{\url{https://github.com/arcosuc3m/grppi}}
+\end{Large}
+\vfill\pause
+\begin{itemize}
+  \item A header only library (might change).
+  \item A set of execution policies.
+  \item A set of type safe generic algorithms.
+  \item Requires \textgood{C++14}.
+  \item GNU GPL v3.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Execution policies}
+\begin{itemize}
+  \item The execution model is encapsulated by execution values.
+  \vfill
+  \item Current execution types:
+    \begin{itemize}
+      \item \cppid{sequential\_execution}.
+      \item \cppid{parallel\_execution\_native}.
+      \item \cppid{parallel\_execution\_omp}.
+      \item \cppid{parallel\_execution\_tbb}.
+      \item \cppid{dynamic\_execution}.
+      \item More to come soon!
+    \end{itemize}
+  \vfill
+  \item All top-level patterns take one \emph{execution} object.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Concurrency degree}
+\begin{itemize}
+  \item Sets the number of underlying threads used by the execution implementation.
+    \begin{itemize}
+      \item \cppid{ex.set\_concurrency\_degree(4)}
+      \item \cppkey{int }\cppid{n = ex.concurrency\_degree()}
+    \end{itemize}
+
+  \vfill
+  \item Defaults selected depending on back-end.
+    \begin{itemize}
+      \item \cppid{sequential\_execution} $\Rightarrow$ 1
+      \item \cppid{parallel\_execution\_native} $\Rightarrow$ \cppid{hardware\_concurrency()}.
+      \item \cppid{parallel\_execution\_omp} $\Rightarrow$ \cppid{omp\_get\_num\_threads()}.
+    \end{itemize}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Dynamic back-end}
+\begin{itemize}
+  \item Useful if you want to take the decision at run-time.
+  \item Holds any other execution policy (or empty).
+\end{itemize}
+\vfill\pause
+\begin{block}{Selecting the execution back-end}
+\begin{lstlisting}
+grppi::dynamic_execution execution_mode(const std::string & opt) {
+  using namespace grppi;
+  if ("seq" == opt) return sequential_execution{};
+  if ("thr" == opt) return parallel_execution_native{};
+  if ("omp" == opt) return parallel_execution_omp{};
+  if ("tbb" == opt) return parallel_execution_tbb{};
+  return {};
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Function objects}
+\begin{itemize}
+  \item GrPPI is heavily based on passing code sections as function objects
+        (aka \emph{functors}).
+  \vfill
+  \item \textenum{Alternatives}:
+    \begin{itemize}
+      \item Function pointer.
+      \item Standard C++ predefined functors (e.g. \cppid{std::plus<int>}).
+      \item Custom hand-written function objects.
+      \item Lambda expressions.
+    \end{itemize}
+  \vfill
+  \item Usually lambda expressions lead to more concise code.
+  \vfill
+  \item An execution policy has associated properties:
+    \begin{itemize}
+      \item Example: \cppid{concurrency\_degree}.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+

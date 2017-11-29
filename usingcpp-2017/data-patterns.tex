@@ -1,0 +1,56 @@
+\subsection{Data patterns}
+
+\begin{frame}[t]{Patterns on data sets}
+\begin{itemize}
+  \item A \textgood{data pattern} performs an operation on one 
+        or more data sets that are already in memory.
+
+  \vfill 
+  \item \textmark{Input}:
+    \begin{itemize}
+      \item One or more data sets.
+      \item Operations.
+    \end{itemize}
+
+  \vfill 
+  \item \textmark{Output}:
+    \begin{itemize}
+      \item A data set (\cppid{map}, \cppid{stencil}).
+      \item A single value (\cppid{reduce}, \cppid{map/reduce}).
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Data sets}
+\begin{itemize}
+  \item Data sets are assumed to be value sequences with known size.
+    \begin{itemize}
+
+      \vfill
+      \item $S = x_1, x_2, \ldots , x_N$
+
+      \vfill
+      \item \textgood{Unidimensional patterns}: Take a single sequence.
+        \begin{itemize}
+          \item Specified by pair of iterators.
+        \end{itemize}
+
+      \vfill
+      \item \textgood{Multidemensional patterns}: Take start of extra sequences.
+        \begin{itemize}
+          \item Size derived from first sequence.
+        \end{itemize}
+
+      \vfill
+      \item \textgood{Output}: Take start of output sequence.
+        \begin{itemize}
+          \item Size derived from first sequence.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\input{map}
+\input{reduce}
+\input{map-reduce}
+\input{stencil}

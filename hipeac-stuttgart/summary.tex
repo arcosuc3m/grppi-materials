@@ -1,0 +1,67 @@
+\section{Conclusions}
+
+\begin{frame}[t]{Summary}
+\begin{itemize}
+  \item An unified programming model for sequential and parallel modes.
+  \item Multiple back-ends available.
+  \item Current pattern set:
+    \begin{itemize}
+      \item \textenum{Data}: \textmark{map}, \textmark{reduce}, \textmark{map/reduce}, \textmark{stencil}.
+      \item \textenum{Task}: \textmark{divide/conquer}.
+      \item \textenum{Streaming}: \textmark{pipeline} with nesting of \textmark{farm}, \textmark{filter},
+            \textmark{reduction}, \textmark{iteration}.
+    \end{itemize}
+  \item Current limitation:
+    \begin{itemize}
+      \item Pipelines cannot be nested inside other patterns (e.g. iteration of a pipeline).
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Future work}
+\begin{itemize}
+  \item Integrate additional backends (e.g. FastFlow, CUDA).
+  \item Eliminate metaprogramming by using Concepts.
+  \item Extend and simplify the interface for data patterns.
+  \item Support multi-context patterns.
+  \item Better support of NUMA for native back-end. 
+  \item More patterns.
+  \item More applications.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Recent publications}
+\begin{scriptsize}
+\begin{itemize}
+\item
+\textgood{A Generic Parallel Pattern Interface for Stream and Data Processing}. 
+D. del Rio, M. F. Dolz, J. Fernández, J. D. García. 
+Concurrency and Computation: Practice and Experience. 
+2017.
+\vfill
+\item
+\textgood{Supporting Advanced Patterns in GrPPI: a Generic Parallel Pattern Interface}.
+D. R. del Astorga, M. F. Dolz, J. Fernandez, and J. D. Garcia, 
+Auto-DaSP 2017 (Euro-Par 2017).
+\item
+\textgood{Probabilistic-Based Selection of Alternate Implementations for Heterogeneous Platforms}.
+J. Fernandez, A. Sanchez, D. del Río, M. F. Dolz, J. D Garcia.
+ICA3PP 2017.
+2017.
+\item
+\textgood{A C++ Generic Parallel Pattern Interface for Stream Processing}. 
+D. del Río, M. F. Dolz, L. M. Sanchez, J. Garcia-Blas and J. D. Garcia. 
+ICA3PP 2016.
+\item
+\textgood{Finding parallel patterns through static analysis in C++ applications}.
+D. R. del Astorga, M. F. Dolz, L. M. Sanchez, J. D. Garcia, M. Danelutto, and M. Torquati, 
+International Journal of High Performance Computing Applications, 2017.
+\end{itemize}
+\end{scriptsize}
+\end{frame}
+
+\begin{frame}{GrPPI}
+\begin{Large}
+\textgood{\url{https://github.com/arcosuc3m/grppi}}
+\end{Large}
+\end{frame}

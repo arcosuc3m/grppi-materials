@@ -1,0 +1,33 @@
+\begin{frame}[t]{Stencil pattern}
+\begin{itemize}
+  \item A \textgood{stencil} pattern applies a transformation to every 
+        element in one or multiple data sets, generating a new data set as an output
+    \begin{itemize}
+      \item The transformation is function of a data item and its \emph{neighbourhood}.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Single sequence stencil}
+\begin{block}{Neighbour average}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<double> neib_avg(const Execution & ex, const std::vector<double> & v)
+{
+  std::vector<double> res(v.size());
+  grppi::stencil(ex, v.begin(), v.end(), 
+    [](auto it, auto n) {
+      return *it + accumulate(begin(n), end(n)); 
+    },
+    [&](auto it) {
+      vector<double> r;
+      if (it!=begin(v)) r.push_back(*prev(it));
+      if (distance(it,end(end))>1) r.push_back(*next(it));
+      return r;
+    });
+  return res;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+

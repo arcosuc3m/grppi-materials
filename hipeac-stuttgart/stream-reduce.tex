@@ -1,0 +1,34 @@
+\begin{frame}[t]{Stream reduction pattern}
+\begin{itemize}
+  \item A \textgood{stream reduction} pattern performs a reduction over the items of a
+        subset of a data stream.
+  \vfill\pause
+  \item \textenum{Key elements}
+    \begin{itemize}
+      \item \textmark{window-size}: Number of elements in a reduction window.
+      \item \textmark{offset}: Distance between two consecutive window starts.
+      \item \textmark{identity}: Value used as identity in reductions.
+      \item \textmark{combiner}: Combination operation used for reductions.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Windowed reductions}
+\begin{block}{Chunked sum}
+\begin{lstlisting}
+template <typename Execution>
+void print_primes(const Execution & ex, int n)
+{
+  grppi::pipeline(exec,
+    [i=0,max=n]() mutable -> optional<double> {
+      if (i<=n) return i++;
+      else return {};
+    },
+    grppi::reduce(100, 50, 0.0,
+      [](double x, double y) { return x+y; }),
+    [](int x) { cout << x << "\n"; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

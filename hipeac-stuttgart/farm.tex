@@ -1,0 +1,52 @@
+\begin{frame}[t]{Farm pattern}
+\begin{itemize}
+  \item A \textgood{farm} is a streaming pattern applicable to a stage in a \textmark{pipeline},
+        providing multiple tasks to process data items from a data stream.
+    \begin{itemize}
+      \item A \textmark{farm} has an associated \textgood{cardinality} which is the number of parallel
+             tasks used to serve the stage.
+      \item Each task in a \textmark{farm} runs a \textgood{transformer} for each data item it receives.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Farms in pipelines}
+\begin{block}{Square values}
+\begin{lstlisting}
+template <typename Execution>
+void run_pipe(const Execution & ex, int n)
+{
+  grppi::pipeline(ex,
+    [i=0,max=n] () mutable -> optional<int> {
+      if (i<max) return i++;
+      else return {};
+    },
+    grppi::farm(4
+      [](int x) -> double { return x*x; }),
+    [](double x) { cout << x << "\n"; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Piecewise farms}
+\begin{block}{Square values}
+\begin{lstlisting}
+template <typename Execution>
+void run_pipe(const Execution & ex, int n)
+{
+  auto inner = grppi::farm(4 [](int x) -> double { return x*x; });
+
+  grppi::pipeline(ex,
+    [i=0,max=n] () mutable -> optional<int> {
+      if (i<max) return i++;
+      else return {};
+    },
+    inner,
+    [](double x) { cout << x << "\n"; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

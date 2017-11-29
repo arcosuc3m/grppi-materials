@@ -1,0 +1,110 @@
+\begin{frame}[t]{Maps on data sequences}
+\begin{itemize}
+  \item A \textgood{map} pattern applies an operation to every element in a
+        a data set, generating a new data set.
+  \vfill
+  \item \textgood{Unidimensional}:
+    \begin{itemize}
+      \item $S = x_1, x_2, \ldots x_n$
+      \item $map(S,f)$
+        \begin{itemize} 
+          \item $f(x_1), f(x_2), \ldots, f(x_n)$
+        \end{itemize}
+    \end{itemize}
+
+  \vfill
+  \item \textgood{Multidimensional}:
+    \begin{itemize}
+      \item $S_k = x^k_1, x^k_2, \ldots, x^k_n$
+      \item $map(S_1, S_2, \ldots, S_m, f)$
+        \begin{itemize}
+          \item $f(x^1_1, x^2_1, \ldots, x^m_1), f(x^2_1, x^2_2, \ldots, x^m_2), \ldots$
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Single sequences mapping}
+\begin{block}{Double all elements in sequence}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<double> double_elements(const Execution & ex, 
+                                    const std::vector<double> & v) 
+{
+  std::vector<double> res(v.size());
+
+  grppi::map(ex, v.begin(), v.end(), res.begin(), 
+    [](double x) { return 2*x; });
+
+  return res;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Multiple sequences mapping}
+\begin{block}{Add two vectors}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<double> add_vectors(const Execution & ex, 
+                                const std::vector<double> & v1,
+                                const std::vector<double> & v2) 
+{
+  auto size = std::min(v1.size(), v2.size());
+  std::vector<double> res(size);
+
+  grppi::map(ex, v1.begin(), v1.end(), res.begin(),
+    [](double x, double y) { return x+y; },
+    v2.begin());
+
+  return res;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Multiple sequences mapping}
+\begin{block}{Add three vectors}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<double> add_vectors(const Execution & ex, 
+                                const std::vector<double> & v1,
+                                const std::vector<double> & v2,
+                                const std::vector<double> & v3) 
+{
+  auto size = std::min(v1.size(), v2.size());
+  std::vector<double> res(size);
+
+  grppi::map(ex, v1.begin(), v1.end(), res.begin(),
+    [](double x, double y, double z) { return x+y+z; },
+    v2.begin(), v3.begin());
+
+  return res;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Heterogeneous mapping}
+\begin{itemize}
+  \item The result can be from a different type.
+\end{itemize}
+\begin{block}{Complex vector from real and imaginary vectors}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<complex<double>> create_cplx(const Execution & ex,
+                                         const std::vector<double> & re,
+                                         const std::vector<double> & im)
+{
+  auto size = std::min(re.size(), im.size());
+  std::vector<complex<double>> res(size);
+
+  grppi::map(ex, re.begin(), re.end(), res.begin(),
+    [](double r, double i) -> complex<double> { return {r,i}; }
+    im.begin());
+
+  return res;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

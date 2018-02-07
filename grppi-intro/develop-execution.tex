@@ -1,0 +1,127 @@
+\section{Writing your own execution}
+
+\begin{frame}[t]{Addine a new policy}
+\begin{itemize}
+\item Adding a new execution policy is done by writing a new class.
+  \begin{itemize}
+    \item No inheritance needed.
+      \begin{itemize}
+        \item \emph{``Inheritance is the base class of all evils''} (Sean Parent).
+      \end{itemize}
+    \item No dependency from the library.
+    \item Additionally configure some meta-functions (until we have concepts).
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{My custom execution}
+\begin{block}{my\_execution}
+\begin{lstlisting}
+class my_execution {
+  my_execution() noexcept;
+
+  void set_concurrency_degree(int n) const noexcept;
+  void concurrency_degree() const noexcept;
+
+  void enable_ordering() noexcept;
+  void disable_ordering() noexcept;
+  bool is_ordered() const noexcept;
+
+  //...
+};
+
+template <>
+constexpr bool is_supported<my_execution>() { return true; }
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Adding a pattern}
+\begin{block}{my\_execution::map}
+\begin{lstlisting}
+class my_execution {
+
+  // ...
+
+  template <typename ... InputIterators, typename OutputIterator, 
+            typename Transformer>
+  constexpr void map(std::tuple<InputIterators...> firsts,
+      OutputIterator first_out, std::size_t sequence_size, 
+      Transformer && transform_op) const;
+
+  //...
+};
+
+template <>
+constexpr bool supports_map<my_execution>() { return true; }
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Some helpers in the library}
+\begin{block}{Applying a function to a tuple of iterators}
+\begin{lstlisting}
+template <typename F, typename ... Iterators, template <typename ...> class T>
+decltype(auto) apply_deref_increment(
+    F && f, 
+    T<Iterators...> & iterators)
+\end{lstlisting}
+\end{block}
+\vfill
+\begin{itemize}
+  \item Takes a function \cppid{f} and a tuple of iterators (e.g. result of \cppid{make\_tuple(it1, it2, it3)}.
+  \item Returns \cppid{f(*it1++, *it2++, *it3++)}.
+  \item Very convenient for implementing data patterns.
+  \item More like this in \cppid{include/common/iterator.h}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Implementing map}
+\begin{block}{map}
+\begin{lstlisting}
+template <typename ... InputIterators, typename OutputIterator, 
+          typename Transformer>
+void my_execution_native::map(std::tuple<InputIterators...> firsts,
+    OutputIterator first_out, std::size_t sequence_size, 
+    Transformer transform_op) const
+{
+  using namespace std;
+  auto process_chunk = [&transform_op](auto fins, std::size_t size, auto fout)
+  {
+    const auto l = next(get<0>(fins), size);
+    while (get<0>(fins)!=l) {
+      *fout++ = apply_deref_increment(
+          std::forward<Transformer>(transform_op), fins);
+    }
+  };
+  //...
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Implementing map}
+\begin{block}{map}
+\begin{lstlisting}
+  //...
+  const int chunk_size = sequence_size / concurrency_degree_;
+  {
+    some_worker_pool workers;
+    for (int i=0; i!=concurrency_degree_-1; ++i) {
+      const auto delta = chunk_size * i;
+      const auto chunk_firsts = iterators_next(firsts,delta);
+      const auto chunk_first_out = next(first_out, delta);
+      workers.launch(process_chunk, chunk_firsts, chunk_size, chunk_first_out);
+    }
+
+    const auto delta = chunk_size * (concurrency_degree_ - 1);
+    const auto chunk_firsts = iterators_next(firsts,delta);
+    const auto chunk_first_out = next(first_out, delta);
+    process_chunk(chunk_firsts, sequence_size - delta, chunk_first_out);
+  } // Implicit pool synch
+}
+
+\end{lstlisting}
+\end{block}
+\end{frame}
+

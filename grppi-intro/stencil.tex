@@ -1,0 +1,86 @@
+\begin{frame}[t]{Stencil pattern}
+\begin{itemize}
+  \item A \textgood{stencil} pattern applies a transformation to every 
+        element in one or multiple data sets, generating a new data set as an output
+    \begin{itemize}
+      \item The transformation is function of a data item and its \emph{neighbourhood}.
+    \end{itemize}
+\end{itemize}
+\vfill
+\begin{center}
+\begin{tikzpicture}
+\tikzset{
+  label/.style={text centered, text=orange,font=\footnotesize,minimum width=1cm} ,
+  transform/.style={rectangle,rounded corners,draw=black,fill=green!50,text=white,thick, text centered, font=\tiny, minimum width=0.75cm,minimum height=0.5cm},
+  item/.style={rectangle,draw=black,fill=orange!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm},
+  result/.style={rectangle,draw=black,fill=blue!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm},
+  arrow/.style={->,thick,draw=black,font=\tiny},
+}  
+\node[item] (item1) {};
+\node[item,right=0cm of item1] (item2) {};
+\node[item,right=0cm of item2] (item3) {};
+\node[item,right=0cm of item3] (item4) {};
+\node[item,right=0cm of item4] (item5) {};
+%
+\node[result,below=2cm of item1] (ritem1) {};
+\node[result,right=0cm of ritem1] (ritem2) {};
+\node[result,right=0cm of ritem2] (ritem3) {};
+\node[result,right=0cm of ritem3] (ritem4) {};
+\node[result,right=0cm of ritem4] (ritem5) {};
+%
+\node[transform,below=0.75cm of item1,minimum width=0.5cm] (map1) {};
+\node[transform,below=0.75cm of item2,minimum width=0.5cm] (map2) {};
+\node[transform,below=0.75cm of item3,minimum width=0.5cm] (map3) {};
+\node[transform,below=0.75cm of item4,minimum width=0.5cm] (map4) {};
+\node[transform,below=0.75cm of item5,minimum width=0.5cm] (map5) {};
+%
+\draw[arrow] (item1) -- (map1);
+\draw[arrow] (item2) -- (map1);
+%
+\draw[arrow] (item1) -- (map2);
+\draw[arrow] (item2) -- (map2);
+\draw[arrow] (item3) -- (map2);
+%
+\draw[arrow] (item2) -- (map3);
+\draw[arrow] (item3) -- (map3);
+\draw[arrow] (item4) -- (map3);
+%
+\draw[arrow] (item3) -- (map4);
+\draw[arrow] (item4) -- (map4);
+\draw[arrow] (item5) -- (map4);
+%
+\draw[arrow] (item4) -- (map5);
+\draw[arrow] (item5) -- (map5);
+%
+\path[arrow](map1) -- (ritem1);
+\path[arrow](map2) -- (ritem2);
+\path[arrow](map3) -- (ritem3);
+\path[arrow](map4) -- (ritem4);
+\path[arrow](map5) -- (ritem5);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[t,fragile]{Single sequence stencil}
+\begin{block}{Neighbour average}
+\begin{lstlisting}
+template <typename Execution>
+std::vector<double> neib_avg(const Execution & ex, const std::vector<double> & v)
+{
+  std::vector<double> res(v.size());
+  grppi::stencil(ex, v.begin(), v.end(), 
+    [](auto it, auto n) {
+      return *it + accumulate(begin(n), end(n)); 
+    },
+    [&](auto it) {
+      vector<double> r;
+      if (it!=begin(v)) r.push_back(*prev(it));
+      if (distance(it,end(end))>1) r.push_back(*next(it));
+      return r;
+    });
+  return res;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+

@@ -61,7 +61,9 @@
 \node[reduce,below=0.5cm of map3,minimum width=0.5cm] (red3) {};
 \node[reduce,below=0.5cm of map4,minimum width=0.5cm] (red4) {};
 \node[reduce,below=0.5cm of map5,minimum width=0.5cm] (red5) {};
+\node[item,left=1cm of red1,fill=orange!20,text=black] (item0) {id};
 %
+\path[arrow](item0) -- (red1);
 \path[arrow](map1) -- (red1);
 \path[arrow](map2) -- (red2);
 \path[arrow](map3) -- (red3);

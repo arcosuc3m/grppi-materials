@@ -42,6 +42,11 @@
     \end{itemize}
   \vfill
   \item All top-level patterns take one \emph{execution} object.
+  \vfill
+  \item An execution policy has associated properties:
+    \begin{itemize}
+      \item Example: \cppid{concurrency\_degree}.
+    \end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -86,23 +91,18 @@ grppi::dynamic_execution execution_mode(const std::string & opt) {
 
 \begin{frame}[t]{Function objects}
 \begin{itemize}
-  \item GrPPI is heavily based on passing code sections as function objects
-        (aka \emph{functors}).
+  \item GrPPI is heavily based on passing code sections as callable entities.
   \vfill
   \item \textenum{Alternatives}:
-    \begin{itemize}
+    \pause
+    \begin{itemize}[<+->]
       \item Function pointer.
       \item Standard C++ predefined functors (e.g. \cppid{std::plus<int>}).
       \item Custom hand-written function objects.
       \item Lambda expressions.
     \end{itemize}
-  \vfill
+  \vfill\pause
   \item Usually lambda expressions lead to more concise code.
-  \vfill
-  \item An execution policy has associated properties:
-    \begin{itemize}
-      \item Example: \cppid{concurrency\_degree}.
-    \end{itemize}
 \end{itemize}
 \end{frame}
 

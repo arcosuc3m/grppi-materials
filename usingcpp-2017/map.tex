@@ -4,6 +4,7 @@
         a data set, generating a new data set.
   \vfill
 
+  \pause
   \item \textgood{Unidimensional}:
   \vfill
 \begin{tikzpicture}
@@ -32,11 +33,17 @@
 \node[transform,below=0.25cm of item4,minimum width=0.5cm] (map4) {};
 \node[transform,below=0.25cm of item5,minimum width=0.5cm] (map5) {};
 %
-\draw[arrow] (item1) -- (ritem1);
-\draw[arrow] (item2) -- (ritem2);
-\draw[arrow] (item3) -- (ritem3);
-\draw[arrow] (item4) -- (ritem4);
-\draw[arrow] (item5) -- (ritem5);
+\draw[arrow] (item1) -- (map1);
+\draw[arrow] (item2) -- (map2);
+\draw[arrow] (item3) -- (map3);
+\draw[arrow] (item4) -- (map4);
+\draw[arrow] (item5) -- (map5);
+%
+\draw[arrow] (map1) -- (ritem1);
+\draw[arrow] (map2) -- (ritem2);
+\draw[arrow] (map3) -- (ritem3);
+\draw[arrow] (map4) -- (ritem4);
+\draw[arrow] (map5) -- (ritem5);
 \end{tikzpicture}
 
 
@@ -49,6 +56,7 @@
 %    \end{itemize}
 
   \vfill
+  \pause
   \item \textgood{Multidimensional}:
   \vfill
 \begin{tikzpicture}

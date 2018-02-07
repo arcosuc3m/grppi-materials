@@ -30,6 +30,9 @@
 \begin{frame}[t]{Execution policies}
 \begin{itemize}
   \item The execution model is encapsulated by execution values.
+    \begin{itemize}
+      \item All top-level patterns take one \emph{execution} object.
+    \end{itemize}
   \vfill
   \item Current execution types:
     \begin{itemize}
@@ -41,68 +44,12 @@
       \item More to come soon!
     \end{itemize}
   \vfill
-  \item All top-level patterns take one \emph{execution} object.
-  \vfill
-  \item An execution policy has associated properties:
+  \item Upcoming:
     \begin{itemize}
-      \item Example: \cppid{concurrency\_degree}.
+      \item \cppid{parallel\_execution\_ff}.
+      \item \cppid{parallel\_execution\_cuda}.
     \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[t]{Concurrency degree}
-\begin{itemize}
-  \item Sets the number of underlying threads used by the execution implementation.
-    \begin{itemize}
-      \item \cppid{ex.set\_concurrency\_degree(4)}
-      \item \cppkey{int }\cppid{n = ex.concurrency\_degree()}
-    \end{itemize}
-
   \vfill
-  \item Defaults selected depending on back-end.
-    \begin{itemize}
-      \item \cppid{sequential\_execution} $\Rightarrow$ 1
-      \item \cppid{parallel\_execution\_native} $\Rightarrow$ \cppid{hardware\_concurrency()}.
-      \item \cppid{parallel\_execution\_omp} $\Rightarrow$ \cppid{omp\_get\_num\_threads()}.
-    \end{itemize}
-
-\end{itemize}
-\end{frame}
-
-\begin{frame}[t,fragile]{Dynamic back-end}
-\begin{itemize}
-  \item Useful if you want to take the decision at run-time.
-  \item Holds any other execution policy (or empty).
-\end{itemize}
-\vfill\pause
-\begin{block}{Selecting the execution back-end}
-\begin{lstlisting}
-grppi::dynamic_execution execution_mode(const std::string & opt) {
-  using namespace grppi;
-  if ("seq" == opt) return sequential_execution{};
-  if ("thr" == opt) return parallel_execution_native{};
-  if ("omp" == opt) return parallel_execution_omp{};
-  if ("tbb" == opt) return parallel_execution_tbb{};
-  return {};
-}
-\end{lstlisting}
-\end{block}
-\end{frame}
-
-\begin{frame}[t]{Function objects}
-\begin{itemize}
-  \item GrPPI is heavily based on passing code sections as callable entities.
-  \vfill
-  \item \textenum{Alternatives}:
-    \pause
-    \begin{itemize}[<+->]
-      \item Function pointer.
-      \item Standard C++ predefined functors (e.g. \cppid{std::plus<int>}).
-      \item Custom hand-written function objects.
-      \item Lambda expressions.
-    \end{itemize}
-  \vfill\pause
-  \item Usually lambda expressions lead to more concise code.
 \end{itemize}
 \end{frame}
 

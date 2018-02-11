@@ -106,35 +106,36 @@ void run_pipe(const Execution & ex, int n)
 
 \begin{frame}[t,fragile]{Nested pipelines}
 \begin{itemize}
-  \item Pipelines may be nested.
+  \item \textgood{Pipelines} may be \textmark{nested}.
   \vfill
-  \item An inner pipeline:
+  \item An \textenum{inner pipeline}:
     \begin{itemize}
       \item Does not take an execution policy.
       \item All stages are transformers (no generator).
       \item The last stage must also produce values.
     \end{itemize}
   \vfill
-  \item The inner pipeline uses the same execution policy than the outer
+  \item The \textgood{inner pipeline} uses the same execution policy than the outer
         pipeline.
 \end{itemize}
 \end{frame}
 
 \begin{frame}[t,fragile]{Nested pipelines}
-\begin{block}{x -> x*x -> 1/x -> print}
-\begin{lstlisting}
-template <typename Execution>
-void run_pipe(const Execution & ex, int n)
-{
-  grppi::pipeline(ex,
-    [i=0,max=n] () mutable -> optional<int> {
-      if (i<max) return i++;
-      else return {};
-    },
-    grppi::pipeline(
-      [](int x) -> double { return x*x; },
-      [](double x) { return 1/x; }),
-    [](double x) { cout << x << "\n"; }
+\begin{block}{Image processing}
+\begin{lstlisting}[escapechar=@]
+void process(std::istream & in_file, std::ostream & out_file) {
+  grppi:parallel_execution_native ex;@\pause@
+  grppi::pipeline(ex,@\pause@
+    [&in_file]() -> optional<frame> {
+      frame f = read_frame(file);
+      if (!file) return {};
+      return f;
+    },@\pause@
+    pipeline(
+      [](const frame & f) { return filter(f); },
+      [](const frame & f) { return gray_scale(f); },
+    },@\pause@
+    [&out_file](const frame & f) { write_frame(out_file, f); }
   );
 }
 \end{lstlisting}
@@ -142,23 +143,22 @@ void run_pipe(const Execution & ex, int n)
 \end{frame}
 
 \begin{frame}[t,fragile]{Piecewise pipelines}
-\begin{itemize}
-  \item A pipeline can be piecewise created.
-\end{itemize}
-\begin{block}{x -> x*x -> 1/x -> print}
-\begin{lstlisting}
-template <typename Execution>
-void run_pipe(const Execution & ex, int n)
-{
-  auto generator = [i=0,max=n] () mutable -> optional<int> {
-    if (i<max) return i++; else return {};
-  };
-  auto inner = grppi::pipeline(
-      [](int x) -> double { return x*x; },
-      [](double x) { return 1/x; });
-  auto printer = [](double x) { cout << x << "\n"; };
+\begin{block}{Image processing}
+\begin{lstlisting}[escapechar=@]
+void process(std::istream & in_file, std::ostream & out_file) {@\pause@
+  auto reader = [&in_file]() -> optional<frame> {
+    frame f = read_frame(file);
+    if (!file) return {};
+    return f;
+  };@\pause@
+  auto transformer = pipeline(
+    [](const frame & f) { return filter(f); },
+    [](const frame & f) { return gray_scale(f); },
+  };@\pause@
+  auto writer = [&out_file](const frame & f) { write_frame(out_file, f); }@\pause@
 
-  grppi::pipeline(ex, generator, inner, printer);
+  grppi:parallel_execution_native ex;
+  grppi::pipeline(ex, reader, transformer, writer);
 }
 \end{lstlisting}
 \end{block}

@@ -120,15 +120,31 @@
 \end{frame}
 
 \begin{frame}[t,fragile]{Single sequences mapping}
-\begin{block}{Double all elements in sequence}
+\begin{block}{Double all elements in vector sequentially}
 \begin{lstlisting}
-template <typename Execution>
-std::vector<double> double_elements(const Execution & ex, 
-                                    const std::vector<double> & v) 
+std::vector<double> double_elements(const std::vector<double> & v) 
 {
   std::vector<double> res(v.size());
+  grppi::sequential_execution seq;
 
-  grppi::map(ex, v.begin(), v.end(), res.begin(), 
+  grppi::map(seq, v.begin(), v.end(), res.begin(), 
+    [](double x) { return 2*x; });
+
+  return res;
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Single sequences mapping}
+\begin{block}{Double all elements in vector with OpenMP}
+\begin{lstlisting}
+std::vector<double> double_elements(const std::vector<double> & v) 
+{
+  std::vector<double> res(v.size());
+  grppi::parallel_execution_omp omp;
+
+  grppi::map(omp, v.begin(), v.end(), res.begin(), 
     [](double x) { return 2*x; });
 
   return res;

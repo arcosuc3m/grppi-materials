@@ -123,14 +123,14 @@ double scalar_product(const Execution & ex,
 \end{itemize}
 \vfill\pause
 \begin{block}{Word frequencies}
-\begin{lstlisting}
+\begin{lstlisting}[escapechar=@]
 template <typename Execution>
 auto word_freq(const Execution & ex, const std::vector<std::string> & words)
-{
+{@\pause@
   using namespace std;
-  using dictionary = std::map<string,int>;
-  return grppi::map_reduce(ex, words.begin(), words.end(), dictionary{},
-    [](string w) -> dictionary { return {w,1}; }
+  using dictionary = std::map<string,int>;@\pause@
+  return grppi::map_reduce(ex, words.begin(), words.end(), dictionary{},@\pause@
+    [](string w) -> dictionary { return {w,1}; }@\pause@
     [](dictionary & lhs, const dictionary & rhs) -> dictionary {
       for (auto & entry : rhs) { lhs[entry.first] += entry.second; }
       return lhs;

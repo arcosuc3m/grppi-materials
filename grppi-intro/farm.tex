@@ -39,19 +39,19 @@
 \end{frame}
 
 \begin{frame}[t,fragile]{Farms in pipelines}
-\begin{block}{Square values}
+\begin{block}{Improving a video}
 \begin{lstlisting}
 template <typename Execution>
-void run_pipe(const Execution & ex, int n)
+void run_pipe(const Execution & ex, std::ifstream & filein, std::ofstream & fileout)
 {
   grppi::pipeline(ex,
-    [i=0,max=n] () mutable -> optional<int> {
-      if (i<max) return i++;
-      else return {};
+    [&filein] () -> optional<frame> {
+      frame f = read_frame(filein);
+      if (!filein) retrun {};
+      return f;
     },
-    grppi::farm(4
-      [](int x) -> double { return x*x; }),
-    [](double x) { cout << x << "\n"; }
+    farm(4, [](const frame & f) { return improve(f); },
+    [&fileout] (const frame & f) { write_frame(f); }
   );
 }
 \end{lstlisting}
@@ -59,20 +59,21 @@ void run_pipe(const Execution & ex, int n)
 \end{frame}
 
 \begin{frame}[t,fragile]{Piecewise farms}
-\begin{block}{Square values}
+\begin{block}{Improving a video}
 \begin{lstlisting}
 template <typename Execution>
-void run_pipe(const Execution & ex, int n)
+void run_pipe(const Execution & ex, std::ifstream & filein, std::ofstream & fileout)
 {
-  auto inner = grppi::farm(4 [](int x) -> double { return x*x; });
+  auto my_filter = farm(4, [](const frame & f) { return improve(f); });
 
   grppi::pipeline(ex,
-    [i=0,max=n] () mutable -> optional<int> {
-      if (i<max) return i++;
-      else return {};
+    [&filein] () -> optional<frame> {
+      frame f = read_frame(filein);
+      if (!filein) retrun {};
+      return f;
     },
-    inner,
-    [](double x) { cout << x << "\n"; }
+    my_filter,
+    [&fileout] (const frame & f) { write_frame(f); }
   );
 }
 \end{lstlisting}

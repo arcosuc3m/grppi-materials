@@ -76,13 +76,15 @@ double add_sequence(const Execution & ex, const vector<double> & v)
 \end{frame}
 
 \begin{frame}[t,fragile]{Heterogeneous reduction}
-\begin{block}{Add lengths of sequence of strings}
+\begin{block}{Add areas of shapes}
 \begin{lstlisting}
 template <typename Execution>
-int add_lengths(const Execution & ex, const std::vector<std::string> & words)
+int add_areas(const Execution & ex, const std::vector<shape> & shapes)
 {
-  return grppi::reduce(words.begin(), words.end(), 0,
-    [](int n, std::string w) { return n + w.length(); });
+  return grppi::reduce(shapes.begin(), shapes.end(), 0.0,
+    [](double a, const auto & s) { 
+        return a + s.area()(); 
+    });
 }
 \end{lstlisting}
 \end{block}

@@ -1,0 +1,39 @@
+\begin{tikzpicture}
+\tikzset{
+  label/.style={text centered, text=orange,font=\footnotesize,minimum width=1cm} ,
+  transform/.style={rectangle,rounded corners,draw=black,fill=green!50!black,text=white,thick, text centered, font=\tiny, minimum width=0.75cm,minimum height=0.5cm},
+  item/.style={rectangle,draw=black,fill=orange!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm,minimum height=1cm},
+  result/.style={rectangle,draw=black,fill=blue!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm,minimum height=1cm},
+  arrow/.style={->,thick,draw=black,font=\tiny},
+}  
+\node[item] (item1) {frame[0]};
+\node[item,right=0cm of item1] (item2) {frame[1]};
+\node[item,right=0cm of item2] (item3) {frame[2]};
+\node[item,right=0cm of item3] (item4) {frame[3]};
+\node[item,right=0cm of item4] (item5) {frame[4]};
+%
+\node[result,below=1.5cm of item1] (ritem1) {frame[0]};
+\node[result,right=0cm of ritem1] (ritem2) {frame[1]};
+\node[result,right=0cm of ritem2] (ritem3) {frame[2]};
+\node[result,right=0cm of ritem3] (ritem4) {frame[3]};
+\node[result,right=0cm of ritem4] (ritem5) {frame[4]};
+%
+\node[transform,below=0.5cm of item1,minimum width=0.5cm] (map1) {togray()};
+\node[transform,below=0.5cm of item2,minimum width=0.5cm] (map2) {togray()};
+\node[transform,below=0.5cm of item3,minimum width=0.5cm] (map3) {togray()};
+\node[transform,below=0.5cm of item4,minimum width=0.5cm] (map4) {togray()};
+\node[transform,below=0.5cm of item5,minimum width=0.5cm] (map5) {togray()};
+%
+\draw[arrow] (item1) -- (map1);
+\draw[arrow] (item2) -- (map2);
+\draw[arrow] (item3) -- (map3);
+\draw[arrow] (item4) -- (map4);
+\draw[arrow] (item5) -- (map5);
+%
+\draw[arrow] (map1) -- (ritem1);
+\draw[arrow] (map2) -- (ritem2);
+\draw[arrow] (map3) -- (ritem3);
+\draw[arrow] (map4) -- (ritem4);
+\draw[arrow] (map5) -- (ritem5);
+\end{tikzpicture}
+

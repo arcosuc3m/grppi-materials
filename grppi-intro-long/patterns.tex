@@ -1,0 +1,72 @@
+\begin{frame}[t]{Software design}
+
+\begin{quote}
+There are two ways of constructing a software design:\\ 
+\vspace{1em}
+\pause
+One way is\\
+\pause
+to make it \textgood{so simple} that there are \textmark{obviously no deficiencies},\\
+\pause
+\vspace{.5em}
+and the other way is\\
+\pause
+to make it \textgood{so complicated} that there are \textmark{no obvious deficiencies}.\\ 
+\vspace{1em}
+\pause
+The \textmark{first method} is \textbad{far more difficult}. 
+\end{quote}
+\hfill C.A.R Hoare
+\end{frame}
+
+\begin{frame}[t,fragile]{Adding two vectors}
+\begin{block}{Traditional way}
+\lstinputlisting[firstline=6,lastline=15]{ej/src/addvec/classic.cpp}
+\end{block}
+\pause
+\begin{itemize}
+  \item Adds additional constraints.
+    \begin{itemize}
+      \item Traversing in-order.
+    \end{itemize}
+  \item Potential mistakes.
+    \begin{itemize}
+      \item \cppid{i<v1.size()} versus \cppid{i<=v1.size()}.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Adding two vectors}
+\begin{block}{The STL way}
+\lstinputlisting[firstline=6,lastline=15]{ej/src/addvec/stl.cpp}
+\end{block}
+\pause
+\begin{itemize}
+  \item Does not add additional constraints.
+    \begin{itemize}
+      \item Does not guarantee in-order.
+    \end{itemize}
+  \item Less error prone.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{A brief history of patterns}
+\begin{itemize}
+\item From building and architecture (Cristopher Alexander):
+\begin{itemize}
+  \item \textbf{1977}: A Pattern Language: Towns, Buildings, Construction.
+  \item \textbf{1979}: The timeless way of buildings.
+\end{itemize}
+\vfill
+\item To software design (Gamma et al.):
+\begin{itemize}
+  \item \textbf{1993}: Design Patterns: abstraction and reuse of object oriented design. ECOOP.
+  \item \textbf{1995}: Design Patterns. Elements of Reusable Object-Oriented Software.
+\end{itemize}
+\vfill
+\item To parallel programming (McCool, Reinders, Robinson):
+\begin{itemize}
+  \item \textbf{2012}: Structured Parallel Programming: Patterns for Efficient Computation.
+\end{itemize}
+\end{itemize}
+\end{frame}

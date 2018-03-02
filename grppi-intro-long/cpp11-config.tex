@@ -1,0 +1,60 @@
+\usepackage{listings}
+
+\lstset{
+  language=C++,
+  columns=flexible,
+  identifierstyle=\itshape,
+%
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  xleftmargin=\parindent,
+  language=C++,
+  showstringspaces=false,
+  basicstyle=\tiny,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{brown},
+  columns=flexible,
+%  inputenconding=utf8,
+  extendedchars=true,
+%
+  morekeywords=[1]{constexpr,nullptr,alignof,alignas,decltype},
+  literate={%
+    {¿}{{?`}}1
+    {¡}{{!`}}1
+    {á}{{\'a}}1
+    {é}{{\'e}}1
+    {í}{{\'i}}1
+    {ó}{{\'o}}1
+    {ú}{{\'u}}1
+    {ñ}{{\~n}}1
+}
+}
+
+\newcommand{\cppkey}[1]{%
+{\color{green!40!black}\texttt{#1}}%
+}
+
+\newcommand{\cppid}[1]{%
+{\color{blue}\texttt{#1}}%
+}
+
+\lstdefinestyle{terminal}{
+  language=bash,
+  basicstyle=\scriptsize\ttfamily,
+  numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{yellow!20},
+  literate=%
+    {¿}{{?`}}1
+    {¡}{{!`}}1
+    {á}{{\'a}}1
+    {é}{{\'e}}1
+    {í}{{\'i}}1
+    {ó}{{\'o}}1
+    {ú}{{\'u}}1
+    {ñ}{{\~n}}1
+}
+

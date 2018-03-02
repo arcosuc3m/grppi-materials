@@ -1,0 +1,67 @@
+\subsection{Controlling execution}
+
+\begin{frame}[t]{Execution types}
+\begin{itemize}
+  \item Execution model is encapsulated in execution types.
+    \begin{itemize}
+      \item Always provided as first argument to patterns.
+    \end{itemize}
+
+  \vfill
+  \item Current concrete execution types:
+    \begin{itemize}
+      \item \textmark{Sequential}: \cppid{sequential\_execution}.
+      \item \textmark{ISO C++ Threads}: \cppid{parallel\_execution\_native}.
+      \item \textmark{OpenMP}: \cppid{parallel\_execution\_omp}.
+      \item \textmark{Intel TBB}: \cppid{parallel\_execution\_tbb}.
+    \end{itemize}
+
+  \vfill
+  \item Run-time polymorphic wrapper through type erasure:
+    \begin{itemize}
+      \item \cppid{dynamic\_execution}.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Execution model properties}
+\begin{itemize}
+  \item Some execution types allow finer configurtion.
+    \begin{itemize}
+      \item Example: Concurrency degree.
+    \end{itemize}
+
+  \vfill\pause
+  \item Interface:
+\begin{lstlisting}[basicstyle=\small]
+ex.set_concurrency_degree(4);
+int n = ex.concurrency_degree();
+\end{lstlisting}
+
+  \vfill\pause
+  \item \textenum{Default values}:
+    \begin{itemize}
+      \item \textmark{Sequential} $\Rightarrow$ \cppid{1}.
+      \item \textmark{Native} $\Rightarrow$ \cppid{std::thread::hardware\_concurrency()}.
+      \item \textmark{OpenMP} $\Rightarrow$ \cppid{omp\_get\_num\_threads()}.
+    \end{itemize}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Upcoming execution types}
+\begin{itemize}
+  \item \cppid{parallel\_execution\_ff}
+    \begin{itemize}
+      \item Support for \textmark{FastFlow} as underlying execution policy.
+      \item Planned for version 0.3.
+    \end{itemize}
+
+  \vspace{2em}
+  \item \cppid{parallel\_execution\_cuda}
+    \begin{itemize}
+      \item Support for \textmark{CUDA} devices trhough \textgood{Thrust}.
+      \item Planned for version 0.4.
+    \end{itemize}
+\end{itemize}
+\end{frame}

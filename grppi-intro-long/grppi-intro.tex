@@ -1,0 +1,94 @@
+\documentclass{beamer}
+
+% Font selection
+\usepackage{palatino}
+
+% Beamer template
+\usetheme{Antibes}
+%\usetheme{Berlin}
+
+\usepackage[scale=1.2]{ccicons}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage[final]{pdfpages}
+
+\input{cpp11-config}
+\input{cpp14-config-v2}
+\input{tikz-config}
+\input{common}
+
+% Footline in every slide
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{\begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\ccbyncndeu 
+     \quad -- \quad J. Daniel Garcia 
+     -- ARCOS@UC3M (\textbf{\url{josedaniel.garcia@uc3m.es}}) 
+     -- Twitter: \textbf{\url{@jdgarciauc3m}}
+    \hfill
+    \insertframenumber/\inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+% Logo in every slide
+\addtobeamertemplate{headline}{}
+{% 
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east] at (current page.north east) {\includegraphics[height=0.7cm]{logos/arcos_t.png}};
+\end{tikzpicture}
+}
+
+\tikzset{
+  invisible/.style={opacity=0},
+  visible on/.style={alt=#1{}{invisible}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+}
+
+%Portada
+\title{An introduction to \textbf{GrPPI}}
+\subtitle{Generic Reusable Parallel Patterns Interface}
+\author{J. Daniel Garcia}
+\institute{ARCOS Group\\University Carlos III of Madrid\\Spain}
+\date{February 2018}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\AtBeginSection[]
+{
+  \begin{frame}<*>[t]
+    \setbeamertemplate{section in toc shaded}[default][50]
+    \setbeamertemplate{subsection in toc shaded}[default][50]
+    \tableofcontents[currentsection,hideallsubsections]
+  \end{frame}
+}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>[t]
+    \setbeamertemplate{subsection in toc shaded}[default][50]
+    \tableofcontents[sectionstyle=show/hide,subsectionstyle=show/shaded/hide]
+  \end{frame}
+}
+
+\input{license-cc.tex}
+\input{arcos}
+\input{ack}
+\input{content}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\end{document}

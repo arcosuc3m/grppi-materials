@@ -1,0 +1,141 @@
+\begin{frame}[t]{Map/reduce pattern}
+\begin{itemize}
+  \item A \textgood{map/reduce} pattern combines a \textmark{map} pattern and
+        a \textmark{reduce} pattern into a single pattern.
+    \begin{enumerate}
+      \item One or more data sets are \textmark{mapped} applying a transformation operation.
+      \item The results are combined by a \textmark{reduction} operation.
+    \end{enumerate}
+  \vfill
+  \item A \textmark{map/reduce} could be also expressed by the composition of a
+        \textmark{map} and a \textmark{reduce}. 
+    \begin{itemize}
+      \item However, \textmark{map/reduce} may potentially fuse both stages, 
+            allowing for extra optimizations.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Map/reduce}
+\vfill
+\begin{tikzpicture}
+\tikzset{
+  label/.style={text centered, text=orange,font=\footnotesize,minimum width=1cm} ,
+  transform/.style={rectangle,rounded corners,draw=black,fill=green!50,text=white,thick, text centered, font=\tiny, minimum width=0.75cm,minimum height=0.5cm},
+  reduce/.style={rectangle,rounded corners,draw=black,fill=blue,text=white,thick, text centered, font=\tiny, minimum width=0.75cm,minimum height=0.5cm},
+  item/.style={rectangle,draw=black,fill=orange!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm},
+  result/.style={rectangle,draw=black,fill=blue!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm},
+  arrow/.style={->,thick,draw=black,font=\tiny},
+}  
+\node[item] (item1) {};
+\node[item,right=0cm of item1] (item2) {};
+\node[item,right=0cm of item2] (item3) {};
+\node[item,right=0cm of item3] (item4) {};
+\node[item,right=0cm of item4] (item5) {};
+%
+\node[item,right=1cm of item5] (bitem1) {};
+\node[item,right=0cm of bitem1] (bitem2) {};
+\node[item,right=0cm of bitem2] (bitem3) {};
+\node[item,right=0cm of bitem3] (bitem4) {};
+\node[item,right=0cm of bitem4] (bitem5) {};
+%
+\node[transform,above=0.25cm of ritem1,minimum width=0.5cm] (map1) {};
+\node[transform,above=0.25cm of ritem2,minimum width=0.5cm] (map2) {};
+\node[transform,above=0.25cm of ritem3,minimum width=0.5cm] (map3) {};
+\node[transform,above=0.25cm of ritem4,minimum width=0.5cm] (map4) {};
+\node[transform,above=0.25cm of ritem5,minimum width=0.5cm] (map5) {};
+%
+\path[arrow](item1) -- (map1);
+\path[arrow](bitem1) -- (map1);
+\path[arrow](item2) -- (map2);
+\path[arrow](bitem2) -- (map2);
+\path[arrow](item3) -- (map3);
+\path[arrow](bitem3) -- (map3);
+\path[arrow](item4) -- (map4);
+\path[arrow](bitem4) -- (map4);
+\path[arrow](item5) -- (map5);
+\path[arrow](bitem5) -- (map5);
+%
+\node[reduce,below=0.5cm of map1,minimum width=0.5cm] (red1) {};
+\node[reduce,below=0.5cm of map2,minimum width=0.5cm] (red2) {};
+\node[reduce,below=0.5cm of map3,minimum width=0.5cm] (red3) {};
+\node[reduce,below=0.5cm of map4,minimum width=0.5cm] (red4) {};
+\node[reduce,below=0.5cm of map5,minimum width=0.5cm] (red5) {};
+\node[item,left=1cm of red1,fill=orange!20,text=black] (item0) {id};
+%
+\path[arrow](item0) -- (red1);
+\path[arrow](map1) -- (red1);
+\path[arrow](map2) -- (red2);
+\path[arrow](map3) -- (red3);
+\path[arrow](map4) -- (red4);
+\path[arrow](map5) -- (red5);
+\path[arrow](red1) -- (red2);
+\path[arrow](red2) -- (red3);
+\path[arrow](red3) -- (red4);
+\path[arrow](red4) -- (red5);
+%
+\node[result,below=0.5cm of red5] (result) {result};
+%
+\path[arrow](red5) -- (result);
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[t,fragile]{Single sequence map/reduce}
+\begin{block}{Sum of squares}
+\begin{lstlisting}
+template <typename Execution>
+double sum_squares(const Execution & ex, const std::vector<double> & v)
+{
+  return grppi::map_reduce(ex, v.begin(), v.end(), 0.0,
+    [](double x) { return x*x; }
+    [](double x, double y) { return x+y; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Map/reduce on two data sets}
+\begin{block}{Scalar product}
+\begin{lstlisting}
+template <typename Execution>
+double scalar_product(const Execution & ex,
+                      const std::vector<double> & v1,
+                      const std::vector<double> & v2)
+{
+  return grppi::map_reduce(ex, begin(v1), end(v1), 0.0,
+    [](double x, double y) { return x*y; },
+    [](double x, double y) { return x+y; },
+    v2.begin());
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Cannonical map/reduce}
+\begin{itemize}
+  \item Given a sequence of words, produce a \emph{<key,value>} container where:
+    \begin{itemize}
+      \item The key is the word.
+      \item The value is the number of occurrences of that word.
+    \end{itemize}
+\end{itemize}
+\vfill\pause
+\begin{block}{Word frequencies}
+\begin{lstlisting}[escapechar=@]
+template <typename Execution>
+auto word_freq(const Execution & ex, const std::vector<std::string> & words)
+{@\pause@
+  using namespace std;
+  using dictionary = std::map<string,int>;@\pause@
+  return grppi::map_reduce(ex, words.begin(), words.end(), dictionary{},@\pause@
+    [](string w) -> dictionary { return {w,1}; }@\pause@
+    [](dictionary & lhs, const dictionary & rhs) -> dictionary {
+      for (auto & entry : rhs) { lhs[entry.first] += entry.second; }
+      return lhs;
+    });
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

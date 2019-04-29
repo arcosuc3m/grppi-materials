@@ -1,0 +1,81 @@
+\begin{frame}[t]{Farm pattern}
+\begin{itemize}
+  \item A \textgood{farm} is a streaming pattern applicable to a stage in a \textmark{pipeline},
+        providing multiple tasks to process data items from a data stream.
+    \begin{itemize}
+      \item A \textmark{farm} has an associated \textgood{cardinality} which is the number of parallel
+             tasks used to serve the stage.
+      \item Each task in a \textmark{farm} runs a \textgood{transformer} for each data item it receives.
+    \end{itemize}
+\end{itemize}
+\vfill
+\begin{center}
+\begin{tikzpicture}
+\tikzset{
+  label/.style={text centered, text=orange,font=\footnotesize,minimum width=1cm} ,
+  transform/.style={rectangle,rounded corners,draw=black,fill=green!50,text=white,thick, text centered, font=\tiny, minimum width=0.75cm,minimum height=0.5cm},
+  item/.style={rectangle,draw=black,fill=orange!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm},
+  result/.style={rectangle,draw=black,fill=blue!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm},
+  arrow/.style={->,thick,draw=black,font=\tiny},
+}  
+\node[transform] (stage0) {};
+\node[transform, right=1cm of stage0] (stage1) {};
+\node[transform,right=1cm of stage1] (stage2a) {};
+\node[transform,above=0.5cm of stage2a] (stage2b) {};
+\node[transform,below=0.5cm of stage2a] (stage2c) {};
+\node[transform,right=1cm of stage2a] (stage3) {};
+\node[transform,right=1cm of stage3] (stage4) {};
+%
+\path[arrow] (stage0) -- (stage1);
+\path[arrow] (stage1) -- (stage2a);
+\path[arrow] (stage1) -- (stage2b);
+\path[arrow] (stage1) -- (stage2c);
+\path[arrow] (stage2a) -- (stage3);
+\path[arrow] (stage2b) -- (stage3);
+\path[arrow] (stage2c) -- (stage3);
+\path[arrow] (stage3) -- (stage4);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[t,fragile]{Farms in pipelines}
+\begin{block}{Improving a video}
+\begin{lstlisting}
+template <typename Execution>
+void run_pipe(const Execution & ex, std::ifstream & filein, std::ofstream & fileout)
+{
+  grppi::pipeline(ex,
+    [&filein] () -> optional<frame> {
+      frame f = read_frame(filein);
+      if (!filein) retrun {};
+      return f;
+    },
+    farm(4, [](const frame & f) { return improve(f); }),
+    [&fileout] (const frame & f) { write_frame(f); }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Piecewise farms}
+\begin{block}{Improving a video}
+\begin{lstlisting}
+template <typename Execution>
+void run_pipe(const Execution & ex, std::ifstream & filein, std::ofstream & fileout)
+{
+  auto reader = [&filein] () -> optional<frame> {
+    frame f = read_frame(filein);
+    if (!filein) retrun {};
+    return f;
+  };
+
+  auto writer = [&fileout] (const frame & f) { write_frame(f); };
+
+  auto improver = farm(4, [](const frame & f) { return improve(f); });
+
+  grppi::pipeline(ex, reader, improver, writer);
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

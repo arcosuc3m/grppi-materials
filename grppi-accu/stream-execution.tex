@@ -1,0 +1,39 @@
+\begin{frame}[t]{Ordering}
+\begin{itemize}
+  \item Signals if pipeline items must be consumed in the same order they were produced.
+    \begin{itemize}
+      \item Do they need to be \emph{time-stamped}?
+    \end{itemize}
+
+  \vfill
+  \item Default is \textmark{ordered}.
+
+  \vfill
+  \item \textenum{API}
+    \begin{itemize}
+      \item \cppid{ex.enable\_ordering()}
+      \item \cppid{ex.disable\_ordering()}
+      \item \cppkey{bool } \cppid{o = ex.is\_ordered()}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Queueing properties}
+\begin{itemize}
+  \item Some policies (\textgood{native} and \textgood{omp}) use queues to
+        communicate pipeline stages.
+
+  \vfill
+  \item \textenum{Properties}:
+    \begin{itemize}
+      \item \textmark{Queue size}: Buffer size of the queue.
+      \item \textmark{Mode}: \emph{blocking} versus \emph{lock-free}.
+    \end{itemize}
+
+  \vfill
+  \item \textenum{API}
+    \begin{itemize}
+      \item \cppid{ex.set\_queue\_attributes(100, mode::blocking)}
+    \end{itemize}
+\end{itemize}
+\end{frame}

@@ -1,0 +1,26 @@
+\begin{frame}[t,fragile]{Contexts}
+\begin{itemize}
+  \item A context allows to use a different execution policy for
+        a subset of a pipeline.
+    \begin{itemize}
+      \item Simplifies composition of pipelines.
+      \item Allocate sets of threads to different sub pipelines.
+    \end{itemize}
+\end{itemize}
+\begin{block}{Execution contexts}
+\begin{lstlisting}
+template <typename E1, typename E2, typename Generator>
+void run_pipe(const E1 & ex1, const E2 & ex2, Generator gen)
+{
+  grppi::pipeline(ex1,
+    gen,
+    run_with(ex2, pipeline(
+      [](int x) -> double { return x*x; },
+      [](double x) { return 1/x; },
+    )),
+    [](double x) { cout << x << "\n"; }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

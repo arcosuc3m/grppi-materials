@@ -1,0 +1,5 @@
+add_executable(loop loop.cpp)
+add_executable(stl-transform stl-transform.cpp)
+add_executable(grppi-frames grppi-frames.cpp)
+add_executable(grppi-filter grppi-filter.cpp)
+add_executable(grppi-filter-lambda grppi-filter-lambda.cpp)

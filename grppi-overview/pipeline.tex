@@ -1,0 +1,90 @@
+\begin{frame}[t]{Pipeline pattern}
+\begin{itemize}
+  \item A \textgood{pipeline} pattern allows processing a data stream where the
+        computation may be divided in multiple stages.
+    \begin{itemize}
+      \item Each stage processes the data item generated in the previous stage
+            and passes the produced result to the next stage.
+    \end{itemize}
+\end{itemize}
+\vfill
+\begin{center}
+\begin{tikzpicture}
+\tikzset{
+  label/.style={text centered, text=orange,font=\footnotesize,minimum width=1cm} ,
+  transform/.style={rectangle,rounded corners,draw=black,fill=green!50,text=white,thick, text centered, font=\tiny, minimum width=0.75cm,minimum height=0.5cm},
+  item/.style={rectangle,draw=black,fill=orange!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm},
+  result/.style={rectangle,draw=black,fill=blue!70,text=white,thick, text centered, font=\tiny, minimum width=0.75cm},
+  arrow/.style={->,thick,draw=black,font=\tiny},
+}  
+\node[transform] (stage1) {};
+\node[transform,right=1cm of stage1] (stage2) {};
+\node[transform,right=1cm of stage2] (stage3) {};
+\node[transform,right=1cm of stage3] (stage4) {};
+%
+\path[arrow] (stage1) -- (stage2);
+\path[arrow] (stage2) -- (stage3);
+\path[arrow] (stage3) -- (stage4);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[t,fragile]{Nested pipelines}
+\begin{itemize}
+  \item \textgood{Pipelines} may be \textmark{nested}.
+  \vfill
+  \item An \textenum{inner pipeline}:
+    \begin{itemize}
+      \item Does not take an execution policy.
+      \item All stages are transformers (no generator).
+      \item The last stage must also produce values.
+    \end{itemize}
+  \vfill
+  \item The \textgood{inner pipeline} uses the same execution policy than the outer
+        pipeline.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Nested pipelines}
+\begin{block}{Image processing}
+\begin{lstlisting}[escapechar=@]
+void process(std::istream & in_file, std::ostream & out_file) {
+  grppi:parallel_execution_native ex;@\pause@
+  grppi::pipeline(ex,@\pause@
+    [&in_file]() -> optional<frame> {
+      frame f = read_frame(file);
+      if (!file) return {};
+      return f;
+    },@\pause@
+    pipeline(
+      [](const frame & f) { return filter(f); },
+      [](const frame & f) { return gray_scale(f); },
+    },@\pause@
+    [&out_file](const frame & f) { write_frame(out_file, f); }
+  );
+}
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Piecewise pipelines}
+\begin{block}{Image processing}
+\begin{lstlisting}[escapechar=@]
+void process(std::istream & in_file, std::ostream & out_file) {@\pause@
+  auto reader = [&in_file]() -> optional<frame> {
+    frame f = read_frame(file);
+    if (!file) return {};
+    return f;
+  };@\pause@
+  auto transformer = pipeline(
+    [](const frame & f) { return filter(f); },
+    [](const frame & f) { return gray_scale(f); },
+  };@\pause@
+  auto writer = [&out_file](const frame & f) { write_frame(out_file, f); }@\pause@
+
+  grppi:parallel_execution_native ex;
+  grppi::pipeline(ex, reader, transformer, writer);
+}
+\end{lstlisting}
+\end{block}
+\end{frame}

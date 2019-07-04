@@ -87,7 +87,7 @@
 template <typename Execution>
 double sum_squares(const Execution & ex, const std::vector<double> & v)
 {
-  return grppi::map_reduce(ex, v.begin(), v.end(), 0.0,
+  return grppi::map_reduce(ex, v, 0.0,
     [](double x) { return x*x; }
     [](double x, double y) { return x+y; }
   );
@@ -104,14 +104,32 @@ double scalar_product(const Execution & ex,
                       const std::vector<double> & v1,
                       const std::vector<double> & v2)
 {
-  return grppi::map_reduce(ex, begin(v1), end(v1), 0.0,
+  return grppi::map_reduce(ex, zip(v1,v2), 0.0,
     [](double x, double y) { return x*y; },
-    [](double x, double y) { return x+y; },
-    v2.begin());
+    [](double x, double y) { return x+y; });
 }
 \end{lstlisting}
 \end{block}
 \end{frame}
+
+\begin{frame}[t,fragile]{Heterogeneous reduction versus map/reduce}
+\begin{block}{Add areas of shapes}
+\begin{lstlisting}
+template <typename Execution>
+int add_areas(const Execution & ex, const std::vector<shape> & shapes)
+{
+  return grppi::map_reduce(ex, shapes, 0.0,
+    [](const aut & s) { return s.area(); },
+    [](double a, const double b) { return a+b; } );
+}
+\end{lstlisting}
+\end{block}
+\begin{itemize}
+  \item \textbad{Note}: Better than previous \textmark{heterogeneous reduce}.
+\end{itemize}
+\end{frame}
+
+
 
 \begin{frame}[t,fragile]{Cannonical map/reduce}
 \begin{itemize}
@@ -129,7 +147,7 @@ auto word_freq(const Execution & ex, const std::vector<std::string> & words)
 {@\pause@
   using namespace std;
   using dictionary = std::map<string,int>;@\pause@
-  return grppi::map_reduce(ex, words.begin(), words.end(), dictionary{},@\pause@
+  return grppi::map_reduce(ex, words, dictionary{},@\pause@
     [](string w) -> dictionary { return {w,1}; }@\pause@
     [](dictionary & lhs, const dictionary & rhs) -> dictionary {
       for (auto & entry : rhs) { lhs[entry.first] += entry.second; }

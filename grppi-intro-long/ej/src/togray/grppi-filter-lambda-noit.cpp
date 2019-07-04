@@ -2,15 +2,18 @@
 #include <vector>
 #include <algorithm>
 
+#include <grppi/grppi.h>
+
 #include "frames.h"
 
 using frameseq = std::vector<frame>;
 
 frameseq seq_togray(const frameseq & s) {
-  frameseq r;
-  r.reserve(s.size()) ;
+  frameseq r(s.size());
 
-  std::transform(s.begin(), s.end(), std::back_inserter(r), togray);
+  grppi::sequential_execution seq;
+  grppi::map(seq, s, r, 
+    [](const frame & f) { return filter(f,64); });
 
   return r;
 }

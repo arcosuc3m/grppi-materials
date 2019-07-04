@@ -1,27 +1,5 @@
 \section{Evaluation}
 
-\begin{frame}[t]{Effort}
-\begin{itemize}
-  \item \textenum{Platform}:
-    \begin{itemize}
-      \item 2 $\times$ Intel Xeon Ivy Bridge E5-2695 v2.
-      \item \textmark{Number of cores}: 24.
-      \item \textmark{Clock frequency}: 2.40 GHz.
-      \item \textmark{L3 cache size}: 30 MB.
-      \item \textmark{Main memory}: 128 GB DDR3.
-      \item OS: Ubuntu Linux 14.04 LTS, kernel 3.13.
-    \end{itemize}
-
-  \vfill
-  \item \textenum{Compiler}: GCC 5.0.
-    \begin{itemize}
-      \item \textgood{OpenMP}: GCC.
-      \item \textgood{ISO C++ Threads}: GCC.
-      \item \textgood{Intel TBB}: \textmark{\url{www.threadingbuildingblocks.org}}
-    \end{itemize}
-\end{itemize}
-\end{frame}
-
 \begin{frame}[t]{Example}
 \begin{itemize}
   \item Video frame processing for border detection with two filters.
@@ -46,7 +24,7 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Esfuerzo de paralelización}
+\begin{frame}{Parallelization effort}
 \begin{tabular}{|c|r|r|r|r|}
 \hline
 Pipeline & \multicolumn{4}{c|}{\centering\let\newline\\ \% LOC increase} \\\cline{2-5}
@@ -60,6 +38,43 @@ Composition & \textbf{C++ Threads}  & \textbf{OpenMP} & \textbf{Intel TBB}  & \t
 
 \begin{frame}{Performance: frames per second}
 \includegraphics[height=.85\textheight]{fps.pdf}
+\end{frame}
+
+\begin{frame}[t]{Brain MRI (Magnetic Resonance Imaging)}
+\begin{columns}
+\column{.7\textwidth}
+\begin{itemize}
+  \item Non intrusive method for getting internal anatomy.
+  \item Huge amount of data generated.
+  \item Applied to neuro-sciences.
+    \begin{itemize}
+      \item Bipolar disorder.
+      \item Paranoia.
+      \item Schizophrenia.
+    \end{itemize}
+\end{itemize}
+
+\column{.3\textwidth}
+\includegraphics[width=\textwidth]{img/mri-scanner.jpg}
+\end{columns}
+
+\vspace{2em}
+\begin{itemize}
+  \item Identification of fibers and connectivity between areas in brain.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[t]{Fibbers in brain}
+\begin{center}
+\includegraphics[width=.8\textwidth]{img/brain.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[t]{MRI Evaluation}
+\begin{center}
+\includegraphics[width=\textwidth]{img/grppi-phardi.pdf}
+\end{center}
 \end{frame}
 
 %\begin{frame}{Observaciones}

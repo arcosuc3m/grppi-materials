@@ -14,6 +14,7 @@
       \item \textmark{ISO C++ Threads}: \cppid{parallel\_execution\_native}.
       \item \textmark{OpenMP}: \cppid{parallel\_execution\_omp}.
       \item \textmark{Intel TBB}: \cppid{parallel\_execution\_tbb}.
+      \item \textmark{FastFlow}: \cppid{parallel\_execution\_ff}.
     \end{itemize}
 
   \vfill
@@ -49,19 +50,3 @@ int n = ex.concurrency_degree();
 \end{itemize}
 \end{frame}
 
-\begin{frame}[t]{Upcoming execution types}
-\begin{itemize}
-  \item \cppid{parallel\_execution\_ff}
-    \begin{itemize}
-      \item Support for \textmark{FastFlow} as underlying execution policy.
-      \item Planned for version 0.3.
-    \end{itemize}
-
-  \vspace{2em}
-  \item \cppid{parallel\_execution\_cuda}
-    \begin{itemize}
-      \item Support for \textmark{CUDA} devices trhough \textgood{Thrust}.
-      \item Planned for version 0.4.
-    \end{itemize}
-\end{itemize}
-\end{frame}

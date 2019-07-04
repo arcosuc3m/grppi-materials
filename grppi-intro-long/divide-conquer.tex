@@ -22,7 +22,7 @@
 struct range {
   range(std::vector<double> & v) : first{v.begin()}, last{v.end()} {}
   auto size() const { return std::distance(first,last); }
-  std::vector<double>::iterator first, last;
+  std::vector<double> first, last;
 };
 
 std::vector<range> divide(range r) {

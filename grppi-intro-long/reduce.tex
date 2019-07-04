@@ -68,7 +68,7 @@
 template <typename Execution>
 double add_sequence(const Execution & ex, const vector<double> & v)
 {
-  return grppi::reduce(ex, v.begin(), v.end(), 0.0,
+  return grppi::reduce(ex, v, 0.0,
     [](double x, double y) { return x+y; });
 }
 \end{lstlisting}
@@ -81,11 +81,14 @@ double add_sequence(const Execution & ex, const vector<double> & v)
 template <typename Execution>
 int add_areas(const Execution & ex, const std::vector<shape> & shapes)
 {
-  return grppi::reduce(ex, shapes.begin(), shapes.end(), 0.0,
+  return grppi::reduce(ex, shapes, 0.0,
     [](double a, const auto & s) { 
         return a + s.area()(); 
     });
 }
 \end{lstlisting}
 \end{block}
+\begin{itemize}
+  \item \textbad{Note}: Better expressed as a map reduce.
+\end{itemize}
 \end{frame}

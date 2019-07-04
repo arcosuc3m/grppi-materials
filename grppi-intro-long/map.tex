@@ -127,7 +127,7 @@ std::vector<double> double_elements(const std::vector<double> & v)
   std::vector<double> res(v.size());
   grppi::sequential_execution seq;
 
-  grppi::map(seq, v.begin(), v.end(), res.begin(), 
+  grppi::map(seq, v, res, 
     [](double x) { return 2*x; });
 
   return res;
@@ -144,7 +144,7 @@ std::vector<double> double_elements(const std::vector<double> & v)
   std::vector<double> res(v.size());
   grppi::parallel_execution_omp omp;
 
-  grppi::map(omp, v.begin(), v.end(), res.begin(), 
+  grppi::map(omp, v, res, 
     [](double x) { return 2*x; });
 
   return res;
@@ -164,9 +164,8 @@ std::vector<double> add_vectors(const Execution & ex,
   auto size = std::min(v1.size(), v2.size());
   std::vector<double> res(size);
 
-  grppi::map(ex, v1.begin(), v1.end(), res.begin(),
-    [](double x, double y) { return x+y; },
-    v2.begin());
+  grppi::map(ex, zip(v1, v2), res,
+    [](double x, double y) { return x+y; });
 
   return res;
 }
@@ -186,9 +185,8 @@ std::vector<double> add_vectors(const Execution & ex,
   auto size = std::min(v1.size(), v2.size());
   std::vector<double> res(size);
 
-  grppi::map(ex, v1.begin(), v1.end(), res.begin(),
-    [](double x, double y, double z) { return x+y+z; },
-    v2.begin(), v3.begin());
+  grppi::map(ex, zip(v1,v2,v3), res,
+    [](double x, double y, double z) { return x+y+z; });
 
   return res;
 }
@@ -210,9 +208,8 @@ std::vector<complex<double>> create_cplx(const Execution & ex,
   auto size = std::min(re.size(), im.size());
   std::vector<complex<double>> res(size);
 
-  grppi::map(ex, re.begin(), re.end(), res.begin(),
-    [](double r, double i) -> complex<double> { return {r,i}; }
-    im.begin());
+  grppi::map(ex, zip(re,im), res,
+    [](double r, double i) -> complex<double> { return {r,i}; });
 
   return res;
 }

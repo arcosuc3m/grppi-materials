@@ -7,7 +7,7 @@ using frameseq = std::vector<frame>;
 
 frameseq seq_togray(const frameseq & s) {
   frameseq r;
-  r.reserve(s.size ()) ;
+  r.reserve(s.size()) ;
 
   // Requires processing in-order
   for (const auto & f : s) {

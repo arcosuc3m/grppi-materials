@@ -28,7 +28,7 @@ frame togray(const frame & f);
 
 \begin{frame}[t,fragile]{Transforming a sequence}
 \begin{block}{Parallel STL way (C++17)}
-\lstinputlisting[firstline=6,lastline=18]{ej/src/togray/pstl-transform.cpp}
+\lstinputlisting[firstline=6,lastline=19]{ej/src/togray/pstl-transform.cpp}
 \end{block}
 \end{frame}
 
@@ -38,100 +38,100 @@ frame togray(const frame & f);
 \end{block}
 \end{frame}
 
-\begin{frame}[t,fragile]{Customizable transformations}
-\begin{itemize}
-  \item Assume a \cppid{filter} function that sets to \cppid{level} any pixel
-        which is above \cppid{level}.
-\begin{lstlisting}
-frame filter(const frame & f, int level);
-\end{lstlisting}
-  \pause
-  \item \textbad{Problem}:
-    \begin{itemize}
-      \item The function passed to \cppid{std::transform} or \cppid{grppi::map}
-            must take a single argument.
-    \end{itemize}
-  \pause
-  \item \textgood{Simple solution}:
-    \begin{itemize}
-      \item Wrap into a new function.
-    \end{itemize}
-\end{itemize}
-\begin{columns}
-\column{.5\textwidth}
-\pause
-\begin{block}{Filter level 10}
-\begin{lstlisting}
-frame filter_10(const filter & f) {
-  return filter(f,10);
-}
-\end{lstlisting}
-\end{block}
-\column{.5\textwidth}
-\pause
-\begin{block}{Filter level 128}
-\begin{lstlisting}
-frame filter_128(const filter & f) {
-  return filter(f,128);
-}
-\end{lstlisting}
-\end{block}
-\end{columns}
-\end{frame}
-
-\begin{frame}[t,fragile]{Function object}
-\begin{itemize}
-  \item A \textgood{function object} (or \textmark{functor}) allows providing 
-        customizable functions.
-\end{itemize}
-\begin{columns}[T]
-\column{.5\textwidth}
-\begin{block}{A filter function object}
-\begin{lstlisting}
-struct filter_wrapper {
-  int level;
-  frame operator()(const frame & f) {
-    return filter(f,level);
-  }
-};
-\end{lstlisting}
-\end{block}
-
-\column{.5\textwidth}
-\begin{block}{Using a functor}
-\begin{lstlisting}
-void test(const frame & f1) {
-  filter_wrapper u{25}, v{128};
-  frame r1 = w(f1);
-  frame r2 = v(f1);
-  // ...
-}
-\end{lstlisting}
-\end{block}
-\end{columns}
-\end{frame}
-
-\begin{frame}[t,fragile]{Transforming a sequence}
-\begin{block}{GrPPI + functor}
-\lstinputlisting[firstline=8,lastline=18]{ej/src/togray/grppi-filter.cpp}
-\end{block}
-\end{frame}
-
-\begin{frame}[t,fragile]{Lambda expressions}
-\begin{itemize}
-  \item C++11 added lambda expressions as a way of defining on the fly.
-\end{itemize}
-\begin{block}{Squaring elements}
-\begin{lstlisting}
-void sqr_elements(const std::vector<double> & v) {
-  std::transform(begin(v), end(v), begin(v),
-    [](double x) { 
-      return x*x; 
-    }
-  );
-\end{lstlisting}
-\end{block}
-\end{frame}
+%\begin{frame}[t,fragile]{Customizable transformations}
+%\begin{itemize}
+%  \item Assume a \cppid{filter} function that sets to \cppid{level} any pixel
+%        which is above \cppid{level}.
+%\begin{lstlisting}
+%frame filter(const frame & f, int level);
+%\end{lstlisting}
+%  \pause
+%  \item \textbad{Problem}:
+%    \begin{itemize}
+%      \item The function passed to \cppid{std::transform} or \cppid{grppi::map}
+%            must take a single argument.
+%    \end{itemize}
+%  \pause
+%  \item \textgood{Simple solution}:
+%    \begin{itemize}
+%      \item Wrap into a new function.
+%    \end{itemize}
+%\end{itemize}
+%\begin{columns}
+%\column{.5\textwidth}
+%\pause
+%\begin{block}{Filter level 10}
+%\begin{lstlisting}
+%frame filter_10(const filter & f) {
+%  return filter(f,10);
+%}
+%\end{lstlisting}
+%\end{block}
+%\column{.5\textwidth}
+%\pause
+%\begin{block}{Filter level 128}
+%\begin{lstlisting}
+%frame filter_128(const filter & f) {
+%  return filter(f,128);
+%}
+%\end{lstlisting}
+%\end{block}
+%\end{columns}
+%\end{frame}
+%
+%\begin{frame}[t,fragile]{Function object}
+%\begin{itemize}
+%  \item A \textgood{function object} (or \textmark{functor}) allows providing 
+%        customizable functions.
+%\end{itemize}
+%\begin{columns}[T]
+%\column{.5\textwidth}
+%\begin{block}{A filter function object}
+%\begin{lstlisting}
+%struct filter_wrapper {
+%  int level;
+%  frame operator()(const frame & f) {
+%    return filter(f,level);
+%  }
+%};
+%\end{lstlisting}
+%\end{block}
+%
+%\column{.5\textwidth}
+%\begin{block}{Using a functor}
+%\begin{lstlisting}
+%void test(const frame & f1) {
+%  filter_wrapper u{25}, v{128};
+%  frame r1 = w(f1);
+%  frame r2 = v(f1);
+%  // ...
+%}
+%\end{lstlisting}
+%\end{block}
+%\end{columns}
+%\end{frame}
+%
+%\begin{frame}[t,fragile]{Transforming a sequence}
+%\begin{block}{GrPPI + functor}
+%\lstinputlisting[firstline=8,lastline=18]{ej/src/togray/grppi-filter.cpp}
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}[t,fragile]{Lambda expressions}
+%\begin{itemize}
+%  \item C++11 added lambda expressions as a way of defining on the fly.
+%\end{itemize}
+%\begin{block}{Squaring elements}
+%\begin{lstlisting}
+%void sqr_elements(const std::vector<double> & v) {
+%  std::transform(begin(v), end(v), begin(v),
+%    [](double x) { 
+%      return x*x; 
+%    }
+%  );
+%\end{lstlisting}
+%\end{block}
+%\end{frame}
 
 \begin{frame}[t,fragile]{Transforming a sequence}
 \begin{block}{GrPPI + lambda}

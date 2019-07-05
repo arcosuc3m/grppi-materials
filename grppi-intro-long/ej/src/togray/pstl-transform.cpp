@@ -11,7 +11,8 @@ frameseq seq_togray(const frameseq & s) {
   r.reserve(s.size ()) ;
 
   // No execution order assumed
-  std::transform(std::par, s.begin(), s.end(), std::back_inserter(r), togray);
+  std::transform(std::execution::par, 
+      s.begin(), s.end(), std::back_inserter(r), togray);
 
   return r;
 }

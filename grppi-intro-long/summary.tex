@@ -2,8 +2,13 @@
 
 \begin{frame}[t]{Summary}
 \begin{itemize}
-  \item A unified programming model for sequential and parallel modes.
-  \item Multiple back-ends available.
+  \item A \textgood{unified programming model} for 
+        \textmark{sequential} and \textmark{parallel} modes.
+  \vfill
+  \item Multiple \textgood{back-ends} available:
+        \textmark{sequential}, \textmark{OpenMP},
+        \textmark{TBB}, \textmark{native}, \textmark{FastFlow}.
+  \vfill
   \item Current pattern set:
     \begin{itemize}
       \item \textenum{Data}: \textmark{map}, \textmark{reduce}, \textmark{map/reduce}, \textmark{stencil}.
@@ -11,6 +16,11 @@
       \item \textenum{Streaming}: \textmark{pipeline} with nesting of \textmark{farm}, \textmark{filter},
             \textmark{reduction}, \textmark{iteration}.
     \end{itemize}
+
+  \vfill
+  \item \textgood{Low} programming effort.
+  \vfill
+  \item \textgood{Very low} performance overhead.
 \end{itemize}
 \end{frame}
 

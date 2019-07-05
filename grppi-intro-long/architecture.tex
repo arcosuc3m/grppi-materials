@@ -16,6 +16,61 @@
 \end{itemize}
 \end{frame}
 
+\begin{frame}[t]{C++17: Execution policies}
+\begin{itemize}
+  \item An \textmark{execution policy} allows to disambiguate 
+        parallel algorithms overloads.
+    \begin{itemize}
+      \vfill
+      \item \cppid{sequenced\_policy}: 
+            Not parallelized.
+        \begin{itemize}
+          \item \cppid{std::execution::seq}.
+        \end{itemize}
+
+      \vfill
+      \item \cppid{parallel\_policy}: 
+            Execution can be parallelized in multiple threads.
+        \begin{itemize}
+          \item \cppid{std::execution::par}.
+        \end{itemize}
+
+      \vfill
+      \item \cppid{parallel\_unsequenced\_policy}:
+            Execution can be parallelized, vectorized, or migrated across threads.
+        \begin{itemize}
+          \item \cppid{std::execution::par\_unseq}.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{C++17: Parallel algorithms}
+\begin{itemize}
+  \item Most algorithms in \cppid{<algorithm>} and \cppid{<numeric>}
+        have \textmark{execution policy} based versions.
+\end{itemize}
+
+\pause
+\begin{block}{SAXPY: C++17}
+\begin{lstlisting}[escapechar=@]
+std::transform(@{\color{red}std::execution::parallel}@,
+  y.begin(), y.end(), x.begin(), y.begin(),
+  [=](auto vx, vy) { return a * vx + vy; });
+\end{lstlisting}
+\end{block}
+
+\pause
+\begin{itemize}
+  \item However \ldots
+    \begin{itemize}
+      \item No fine control knobs.
+      \item Lack of task parallelism and stream parallelism.
+      \item OK as an entry level to parallelism.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
 \begin{frame}[t]{GrPPI}
 \begin{Large}
 \textgood{\url{https://github.com/arcosuc3m/grppi}}
@@ -34,6 +89,6 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}[t]{GrPPI as a teching tool}
-\includegraphics[width=\textwidth]{img/grppi-upi.jpg}
-\end{frame}
+%\begin{frame}[t]{GrPPI as a teching tool}
+%\includegraphics[width=\textwidth]{img/grppi-upi.jpg}
+%\end{frame}

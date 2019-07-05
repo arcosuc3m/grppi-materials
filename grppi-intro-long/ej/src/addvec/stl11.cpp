@@ -8,9 +8,9 @@ using numvec = std::vector<double>;
 numvec add(const numvec & v1, const numvec & v2) {
   numvec res;
   res.reserve(v1.size()) ; // Asume equal sizes
-  for (int i =0; i <v1.size() ; ++i) {
-    res.push_back(v1[i]+v2[i]) ;
-  }
+  std::transform(v1.begin(), v1.end(), v2.begin() ,
+      std::back_inserter(res),
+      [](auto x, auto y) { return x+y; }) ;
   return res;
 }
 

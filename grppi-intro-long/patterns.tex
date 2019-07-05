@@ -37,13 +37,23 @@ The \textmark{first method} is \textbad{far more difficult}.
 \end{frame}
 
 \begin{frame}[t,fragile]{Adding two vectors}
-\begin{block}{The STL way}
+\begin{block}{The STL way (C++98/03)}
 \lstinputlisting[firstline=6,lastline=15]{ej/src/addvec/stl.cpp}
 \end{block}
 \pause
 \begin{itemize}
   \item Minimize off-by-one mistakes.
   \item Type specific optimizations.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Adding two vectors}
+\begin{block}{The STL way (C++14)}
+\lstinputlisting[firstline=6,lastline=15]{ej/src/addvec/stl11.cpp}
+\end{block}
+\pause
+\begin{itemize}
+  \item Use (possibly generic) lambdas .
 \end{itemize}
 \end{frame}
 
@@ -66,4 +76,70 @@ The \textmark{first method} is \textbad{far more difficult}.
   \item \textbf{2012}: Structured Parallel Programming: Patterns for Efficient Computation.
 \end{itemize}
 \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Parallel Patterns}
+\begin{itemize}
+  \item Levels of patterns:
+    \begin{itemize}
+      \item Software Architecture Patterns.
+      \item Design Patterns.
+      \item Algorithm Strategy Patterns.
+      \item Implementation patterns.
+    \end{itemize}
+
+  \vfill\pause
+  \item \textmark{Algorithm Strategy Pattern} or \textmark{Algorithmic Skeleton}
+    \begin{itemize}
+      \item A way to codify best practices in \textmark{parallel programming} 
+            in a \textgood{reusable way}.
+    \end{itemize}
+
+  \vfill\pause
+  \item A single \textmark{Parallel Pattern} may have \textgood{different realizations}
+        in \textgood{different programming models}.
+  
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{Example: map pattern}
+\begin{itemize}
+  \item Apply a single \textmark{elemental operation} to different \textmark{data items}.
+\end{itemize}
+\begin{columns}
+
+\column{.5\textwidth}
+\begin{block}{SAXPY: Sequential}
+\begin{lstlisting}
+for (size_t i=0; i<n; ++i) {
+  y[i] = a * x[i] + y[i];
+}
+\end{lstlisting}
+\end{block}
+
+\pause
+
+\begin{block}{SAXPY: OpenMP}
+\begin{lstlisting}
+#pragma omp parallel for
+for (size_t i=0; i<n; ++i) {
+  y[i] = a * x[i] + y[i];
+}
+\end{lstlisting}
+\end{block}
+
+\pause
+
+\column{.5\textwidth}
+\begin{block}{SAXPY: Sequential}
+\begin{lstlisting}
+tbb::parallel_for(tbb::blocked_range<int>{0,n},
+  [&](tbb::blocked_range<int> r) {
+    for (auto i : r) {
+      y[i] = a * x[i] + y[i];
+    }
+  });
+\end{lstlisting}
+\end{block}
+\end{columns}
 \end{frame}

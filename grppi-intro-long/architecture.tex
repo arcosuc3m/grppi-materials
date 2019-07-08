@@ -54,7 +54,7 @@
 \pause
 \begin{block}{SAXPY: C++17}
 \begin{lstlisting}[escapechar=@]
-std::transform(@{\color{red}std::execution::parallel}@,
+std::transform(@{\color{red}std::execution::par}@,
   y.begin(), y.end(), x.begin(), y.begin(),
   [=](auto vx, vy) { return a * vx + vy; });
 \end{lstlisting}
